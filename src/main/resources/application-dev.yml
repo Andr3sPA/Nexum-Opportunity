@@ -26,12 +26,11 @@ spring:
 
 logging:
   level:
-    root: INFO               # nivel general
-    org.springframework: DEBUG   # más detalle de Spring
-    org.springframework.web: DEBUG  # ver requests HTTP
-    feign: DEBUG             # debug de FeignClient
-    co.edu.udea.nexum.opportunity: DEBUG    # tus clases
-
+    root: INFO # nivel general
+    org.springframework: DEBUG # más detalle de Spring
+    org.springframework.web: DEBUG # ver requests HTTP
+    feign: DEBUG # debug de FeignClient
+    co.edu.udea.nexum.opportunity: DEBUG # tus clases
 
 server:
   servlet:
@@ -42,4 +41,5 @@ nexum:
   profile:
     base_url: ${NEXUM_PROFILE_URL:http://localhost:8100/nexum/v1}
 
-allowed-origins: http://localhost:3000/, ${NEXUM_FRONT_ORIGIN}
+allowed-origins: http://localhost:3000/, ${NEXUM_FRONT_ORIGIN:#{null}}
+

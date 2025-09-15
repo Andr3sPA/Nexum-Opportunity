@@ -46,6 +46,7 @@ dependencies {
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
     implementation group: 'org.springframework.boot', name: 'spring-boot-starter-validation', version: '3.4.3'
     implementation 'com.h2database:h2'
+    implementation 'org.springframework.boot:spring-boot-starter-actuator'
 
     // Feign
     implementation group: 'org.springframework.cloud', name: 'spring-cloud-starter-openfeign', version: '4.2.0'
@@ -107,6 +108,15 @@ jacocoTestReport {
 }
 
 tasks.named('bootRun') {
+    doFirst {
+        file('.env').readLines().each() {
+            def (key, value) = it.tokenize('=')
+            environment key, value
+        }
+    }
+}
+
+tasks.named('test') {
     doFirst {
         file('.env').readLines().each() {
             def (key, value) = it.tokenize('=')
