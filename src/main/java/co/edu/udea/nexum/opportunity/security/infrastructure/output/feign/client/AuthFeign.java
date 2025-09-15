@@ -17,5 +17,5 @@ import static co.edu.udea.nexum.opportunity.security.infrastructure.output.feign
 public interface AuthFeign {
 
     @GetMapping(AUTHENTICATION_FEIGN_VALIDATE_END_POINT)
-    AuthenticatedUserResponse validateToken(@RequestParam String token);
+    AuthenticatedUserResponse validateToken(@RequestParam("token") String token);
 }
