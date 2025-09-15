@@ -1,6 +1,6 @@
-package co.edu.udea.nexum.profile.common.application.utils.validators;
+package co.edu.udea.nexum.opportunity.common.application.utils.validators;
 
-import co.edu.udea.nexum.profile.common.application.utils.constraints.AllowedValues;
+import co.edu.udea.nexum.opportunity.common.application.utils.constraints.AllowedValues;
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
 

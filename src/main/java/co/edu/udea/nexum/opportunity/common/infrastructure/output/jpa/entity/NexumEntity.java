@@ -1,4 +1,4 @@
-package co.edu.udea.nexum.profile.common.infrastructure.output.jpa.entity;
+package co.edu.udea.nexum.opportunity.common.infrastructure.output.jpa.entity;
 
 import java.io.Serializable;
 

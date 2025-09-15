@@ -1,6 +1,6 @@
-package co.edu.udea.nexum.profile.common.infrastructure.configuration.feign;
+package co.edu.udea.nexum.opportunity.common.infrastructure.configuration.feign;
 
-import co.edu.udea.nexum.profile.common.domain.utils.annotations.Generated;
+import co.edu.udea.nexum.opportunity.common.domain.utils.annotations.Generated;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import feign.QueryMapEncoder;
@@ -12,7 +12,6 @@ import java.util.Map;
 @Generated
 public class FeignQueryBuilder implements QueryMapEncoder {
     @Override
-    @Generated
     public Map<String, Object> encode(Object o) {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.convertValue(o, new TypeReference<>() {

@@ -1,4 +1,4 @@
-package co.edu.udea.nexum.profile.common.infrastructure.configuration.feign.dto;
+package co.edu.udea.nexum.opportunity.common.infrastructure.configuration.feign.dto;
 
 import lombok.*;
 

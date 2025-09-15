@@ -1,11 +1,10 @@
-package co.edu.udea.nexum.profile.common.infrastructure.utils.constants;
+package co.edu.udea.nexum.opportunity.common.infrastructure.utils.constants;
 
 
-import co.edu.udea.nexum.profile.common.domain.utils.annotations.Generated;
+import co.edu.udea.nexum.opportunity.common.domain.utils.annotations.Generated;
 
 @Generated
 public class ConfigurationConstants {
-
     private ConfigurationConstants() {
         throw new IllegalStateException("Utility Class");
     }

@@ -1,6 +1,6 @@
-package co.edu.udea.nexum.profile.common.infrastructure.configuration.feign;
+package co.edu.udea.nexum.opportunity.common.infrastructure.configuration.feign;
 
-import co.edu.udea.nexum.profile.common.domain.utils.annotations.Generated;
+import co.edu.udea.nexum.opportunity.common.domain.utils.annotations.Generated;
 import feign.Feign;
 import feign.Logger;
 import feign.QueryMapEncoder;
@@ -20,4 +20,7 @@ public class FeignClientConfiguration {
         Feign.builder().queryMapEncoder(feignQueryBuilder);
         return feignQueryBuilder;
     }
+
+/*
+ */
 }

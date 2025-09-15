@@ -1,4 +1,4 @@
-package co.edu.udea.nexum.profile.common.application.dto.request;
+package co.edu.udea.nexum.opportunity.common.application.dto.request;
 
 import lombok.Builder;
 import lombok.Data;

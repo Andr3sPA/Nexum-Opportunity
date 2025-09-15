@@ -1,4 +1,4 @@
-package co.edu.udea.nexum.profile.common.infrastructure.configuration.advisor.dto;
+package co.edu.udea.nexum.opportunity.common.infrastructure.configuration.advisor.dto;
 
 import lombok.*;
 import org.springframework.http.HttpStatusCode;

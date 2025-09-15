@@ -1,4 +1,4 @@
-package co.edu.udea.nexum.profile.common.infrastructure.output.feign.dto.request;
+package co.edu.udea.nexum.opportunity.common.infrastructure.output.feign.dto.request;
 
 public interface FeignRequest {
 }

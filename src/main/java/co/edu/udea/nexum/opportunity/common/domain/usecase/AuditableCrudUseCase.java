@@ -1,7 +1,7 @@
-package co.edu.udea.nexum.profile.common.domain.usecase;
+package co.edu.udea.nexum.opportunity.common.domain.usecase;
 
-import co.edu.udea.nexum.profile.common.domain.model.AuditableModel;
-import co.edu.udea.nexum.profile.common.domain.model.Model;
+import co.edu.udea.nexum.opportunity.common.domain.model.AuditableModel;
+import co.edu.udea.nexum.opportunity.common.domain.model.Model;
 
 import java.time.LocalDateTime;
 

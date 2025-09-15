@@ -1,4 +1,4 @@
-package co.edu.udea.nexum.profile.common.domain.exception;
+package co.edu.udea.nexum.opportunity.common.domain.exception;
 
 public class NexumException extends RuntimeException {
     public NexumException(String message) {

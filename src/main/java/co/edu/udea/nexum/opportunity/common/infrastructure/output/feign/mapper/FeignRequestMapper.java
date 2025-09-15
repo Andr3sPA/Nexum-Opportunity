@@ -1,6 +1,6 @@
-package co.edu.udea.nexum.profile.common.infrastructure.output.feign.mapper;
+package co.edu.udea.nexum.opportunity.common.infrastructure.output.feign.mapper;
 
-import co.edu.udea.nexum.profile.common.infrastructure.output.feign.dto.request.FeignRequest;
+import co.edu.udea.nexum.opportunity.common.infrastructure.output.feign.dto.request.FeignRequest;
 
 import java.util.List;
 

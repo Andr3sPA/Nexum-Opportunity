@@ -1,9 +1,9 @@
-package co.edu.udea.nexum.profile.common.infrastructure.output.jpa.adapter.impl;
+package co.edu.udea.nexum.opportunity.common.infrastructure.output.jpa.adapter.impl;
 
-import co.edu.udea.nexum.profile.common.domain.model.Model;
-import co.edu.udea.nexum.profile.common.infrastructure.output.jpa.adapter.BaseCrudAdapter;
-import co.edu.udea.nexum.profile.common.infrastructure.output.jpa.entity.NexumEntity;
-import co.edu.udea.nexum.profile.common.infrastructure.output.jpa.mapper.BaseEntityMapper;
+import co.edu.udea.nexum.opportunity.common.domain.model.Model;
+import co.edu.udea.nexum.opportunity.common.infrastructure.output.jpa.adapter.BaseCrudAdapter;
+import co.edu.udea.nexum.opportunity.common.infrastructure.output.jpa.entity.NexumEntity;
+import co.edu.udea.nexum.opportunity.common.infrastructure.output.jpa.mapper.BaseEntityMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.data.repository.CrudRepository;
 

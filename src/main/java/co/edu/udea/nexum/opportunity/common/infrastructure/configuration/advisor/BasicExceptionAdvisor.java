@@ -1,13 +1,13 @@
-package co.edu.udea.nexum.profile.common.infrastructure.configuration.advisor;
+package co.edu.udea.nexum.opportunity.common.infrastructure.configuration.advisor;
 
 
-import co.edu.udea.nexum.profile.common.domain.exception.EntityAlreadyExistsException;
-import co.edu.udea.nexum.profile.common.domain.exception.EntityNotFoundException;
-import co.edu.udea.nexum.profile.common.domain.exception.NexumException;
-import co.edu.udea.nexum.profile.common.domain.utils.annotations.Generated;
-import co.edu.udea.nexum.profile.common.infrastructure.configuration.advisor.dto.ExceptionResponse;
-import co.edu.udea.nexum.profile.common.infrastructure.configuration.advisor.dto.ValidationExceptionResponse;
-import co.edu.udea.nexum.profile.common.infrastructure.utils.ExceptionResponseBuilder;
+import co.edu.udea.nexum.opportunity.common.domain.exception.EntityAlreadyExistsException;
+import co.edu.udea.nexum.opportunity.common.domain.exception.EntityNotFoundException;
+import co.edu.udea.nexum.opportunity.common.domain.exception.NexumException;
+import co.edu.udea.nexum.opportunity.common.domain.utils.annotations.Generated;
+import co.edu.udea.nexum.opportunity.common.infrastructure.configuration.advisor.dto.ExceptionResponse;
+import co.edu.udea.nexum.opportunity.common.infrastructure.configuration.advisor.dto.ValidationExceptionResponse;
+import co.edu.udea.nexum.opportunity.common.infrastructure.utils.ExceptionResponseBuilder;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,16 +27,16 @@ public class BasicExceptionAdvisor {
     }
 
     @ExceptionHandler(EntityNotFoundException.class)
-    public ResponseEntity<ExceptionResponse> handleEntityNotFound(EntityNotFoundException e){
+    public ResponseEntity<ExceptionResponse> handleEntityNotFound(EntityNotFoundException e) {
         return ExceptionResponseBuilder.buildResponse(e, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(EntityAlreadyExistsException.class)
-    public ResponseEntity<ExceptionResponse> handleEntityAlreadyExists(EntityAlreadyExistsException e){
+    public ResponseEntity<ExceptionResponse> handleEntityAlreadyExists(EntityAlreadyExistsException e) {
         return ExceptionResponseBuilder.buildResponse(e, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler( MethodArgumentNotValidException.class )
+    @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ValidationExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
         ValidationExceptionResponse exceptionResponse = ValidationExceptionResponse.builder()
                 .statusCode(e.getStatusCode().value())

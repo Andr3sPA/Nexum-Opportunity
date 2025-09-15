@@ -1,7 +1,7 @@
-package co.edu.udea.nexum.profile.common.infrastructure.input.rest;
+package co.edu.udea.nexum.opportunity.common.infrastructure.input.rest;
 
-import co.edu.udea.nexum.profile.common.application.dto.request.BaseRequest;
-import co.edu.udea.nexum.profile.common.application.dto.response.BaseResponse;
+import co.edu.udea.nexum.opportunity.common.application.dto.request.BaseRequest;
+import co.edu.udea.nexum.opportunity.common.application.dto.response.BaseResponse;
 import org.springframework.http.ResponseEntity;
 
 import java.util.List;

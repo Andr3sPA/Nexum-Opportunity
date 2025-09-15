@@ -1,7 +1,7 @@
-package co.edu.udea.nexum.profile.common.domain.exception;
+package co.edu.udea.nexum.opportunity.common.domain.exception;
 
-import co.edu.udea.nexum.profile.common.domain.utils.annotations.Generated;
-import co.edu.udea.nexum.profile.common.domain.utils.constants.CommonDomainConstants;
+import co.edu.udea.nexum.opportunity.common.domain.utils.annotations.Generated;
+import co.edu.udea.nexum.opportunity.common.domain.utils.constants.CommonDomainConstants;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j

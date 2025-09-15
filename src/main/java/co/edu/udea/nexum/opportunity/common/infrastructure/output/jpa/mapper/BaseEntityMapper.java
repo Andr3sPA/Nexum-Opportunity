@@ -1,4 +1,4 @@
-package co.edu.udea.nexum.profile.common.infrastructure.output.jpa.mapper;
+package co.edu.udea.nexum.opportunity.common.infrastructure.output.jpa.mapper;
 
 import java.util.List;
 

@@ -1,6 +1,6 @@
-package co.edu.udea.nexum.profile.common.domain.spi;
+package co.edu.udea.nexum.opportunity.common.domain.spi;
 
-import co.edu.udea.nexum.profile.common.domain.model.Model;
+import co.edu.udea.nexum.opportunity.common.domain.model.Model;
 
 import java.util.List;
 

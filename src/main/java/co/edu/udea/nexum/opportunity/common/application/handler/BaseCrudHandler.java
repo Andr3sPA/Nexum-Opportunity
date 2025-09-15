@@ -1,8 +1,8 @@
-package co.edu.udea.nexum.profile.common.application.handler;
+package co.edu.udea.nexum.opportunity.common.application.handler;
 
 
-import co.edu.udea.nexum.profile.common.application.dto.request.BaseRequest;
-import co.edu.udea.nexum.profile.common.application.dto.response.BaseResponse;
+import co.edu.udea.nexum.opportunity.common.application.dto.request.BaseRequest;
+import co.edu.udea.nexum.opportunity.common.application.dto.response.BaseResponse;
 
 import java.util.List;
 

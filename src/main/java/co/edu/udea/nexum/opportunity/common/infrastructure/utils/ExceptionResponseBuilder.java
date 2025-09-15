@@ -1,7 +1,7 @@
-package co.edu.udea.nexum.profile.common.infrastructure.utils;
+package co.edu.udea.nexum.opportunity.common.infrastructure.utils;
 
-import co.edu.udea.nexum.profile.common.domain.utils.annotations.Generated;
-import co.edu.udea.nexum.profile.common.infrastructure.configuration.advisor.dto.ExceptionResponse;
+import co.edu.udea.nexum.opportunity.common.domain.utils.annotations.Generated;
+import co.edu.udea.nexum.opportunity.common.infrastructure.configuration.advisor.dto.ExceptionResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 

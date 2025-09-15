@@ -1,0 +1,10 @@
+spring:
+  application:
+    name: "Nexum's Opportunity"
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:dev}
+
+app:
+  name: Microservicio de Oportunidades
+  version: 0.0.1
+  description: "Microservicio de oportunidades de Nexum"

@@ -1,6 +1,6 @@
-package co.edu.udea.nexum.profile.common.application.mapper;
+package co.edu.udea.nexum.opportunity.common.application.mapper;
 
-import co.edu.udea.nexum.profile.common.application.dto.request.BaseRequest;
+import co.edu.udea.nexum.opportunity.common.application.dto.request.BaseRequest;
 
 import java.util.List;
 

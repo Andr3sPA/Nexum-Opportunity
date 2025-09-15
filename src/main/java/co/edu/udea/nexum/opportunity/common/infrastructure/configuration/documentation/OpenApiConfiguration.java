@@ -1,7 +1,7 @@
-package co.edu.udea.nexum.profile.common.infrastructure.configuration.documentation;
+package co.edu.udea.nexum.opportunity.common.infrastructure.configuration.documentation;
 
-import co.edu.udea.nexum.profile.common.domain.utils.annotations.Generated;
-import co.edu.udea.nexum.profile.common.infrastructure.utils.constants.ConfigurationConstants;
+import co.edu.udea.nexum.opportunity.common.domain.utils.annotations.Generated;
+import co.edu.udea.nexum.opportunity.common.infrastructure.utils.constants.ConfigurationConstants;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.info.License;

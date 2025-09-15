@@ -1,9 +1,9 @@
-package co.edu.udea.nexum.profile.common.domain.usecase;
+package co.edu.udea.nexum.opportunity.common.domain.usecase;
 
-import co.edu.udea.nexum.profile.common.domain.api.BaseCrudServicePort;
-import co.edu.udea.nexum.profile.common.domain.exception.EntityNotFoundException;
-import co.edu.udea.nexum.profile.common.domain.model.Model;
-import co.edu.udea.nexum.profile.common.domain.spi.BaseCrudPersistencePort;
+import co.edu.udea.nexum.opportunity.common.domain.api.BaseCrudServicePort;
+import co.edu.udea.nexum.opportunity.common.domain.exception.EntityNotFoundException;
+import co.edu.udea.nexum.opportunity.common.domain.model.Model;
+import co.edu.udea.nexum.opportunity.common.domain.spi.BaseCrudPersistencePort;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;

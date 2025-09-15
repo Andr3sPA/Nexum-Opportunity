@@ -1,0 +1,45 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5432}/${DB_NAME:nexum}?sslmode=require&channelBinding=require
+    username: ${DB_USER:nexum_user}
+    password: ${DB_PASSWORD:password}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      schema: ${DB_SCHEMA:opportunity}
+
+  jpa:
+    hibernate:
+      ddl-auto: ${DB_DDL:update}
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        format_sql: true
+        default_schema: ${DB_SCHEMA:opportunity}
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    show-sql: true
+    database: postgresql
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+logging:
+  level:
+    root: INFO               # nivel general
+    org.springframework: DEBUG   # más detalle de Spring
+    org.springframework.web: DEBUG  # ver requests HTTP
+    feign: DEBUG             # debug de FeignClient
+    co.edu.udea.nexum.opportunity: DEBUG    # tus clases
+
+
+server:
+  servlet:
+    context-path: ${APP_PATH:/nexum}
+  port: ${APP_PORT:8120}
+
+nexum:
+  profile:
+    base_url: ${NEXUM_PROFILE_URL:http://localhost:8100/nexum/v1}
+
+allowed-origins: http://localhost:3000/, ${NEXUM_FRONT_ORIGIN}

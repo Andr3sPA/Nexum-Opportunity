@@ -1,6 +1,6 @@
-package co.edu.udea.nexum.profile.common.infrastructure.output.jpa.utils;
+package co.edu.udea.nexum.opportunity.common.infrastructure.output.jpa.utils;
 
-import co.edu.udea.nexum.profile.common.domain.utils.annotations.Generated;
+import co.edu.udea.nexum.opportunity.common.domain.utils.annotations.Generated;
 import lombok.Builder;
 import lombok.Data;
 import org.springframework.data.domain.PageRequest;

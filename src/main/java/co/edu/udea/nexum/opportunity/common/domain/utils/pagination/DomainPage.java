@@ -1,6 +1,6 @@
-package co.edu.udea.nexum.profile.common.domain.utils.pagination;
+package co.edu.udea.nexum.opportunity.common.domain.utils.pagination;
 
-import co.edu.udea.nexum.profile.common.domain.utils.annotations.Generated;
+import co.edu.udea.nexum.opportunity.common.domain.utils.annotations.Generated;
 
 import java.util.List;
 

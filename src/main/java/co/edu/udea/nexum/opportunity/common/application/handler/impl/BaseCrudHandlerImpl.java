@@ -1,12 +1,12 @@
-package co.edu.udea.nexum.profile.common.application.handler.impl;
+package co.edu.udea.nexum.opportunity.common.application.handler.impl;
 
-import co.edu.udea.nexum.profile.common.application.dto.request.BaseRequest;
-import co.edu.udea.nexum.profile.common.application.dto.response.BaseResponse;
-import co.edu.udea.nexum.profile.common.application.handler.BaseCrudHandler;
-import co.edu.udea.nexum.profile.common.application.mapper.BaseRequestMapper;
-import co.edu.udea.nexum.profile.common.application.mapper.BaseResponseMapper;
-import co.edu.udea.nexum.profile.common.domain.api.BaseCrudServicePort;
-import co.edu.udea.nexum.profile.common.domain.model.Model;
+import co.edu.udea.nexum.opportunity.common.application.dto.request.BaseRequest;
+import co.edu.udea.nexum.opportunity.common.application.dto.response.BaseResponse;
+import co.edu.udea.nexum.opportunity.common.application.handler.BaseCrudHandler;
+import co.edu.udea.nexum.opportunity.common.application.mapper.BaseRequestMapper;
+import co.edu.udea.nexum.opportunity.common.application.mapper.BaseResponseMapper;
+import co.edu.udea.nexum.opportunity.common.domain.api.BaseCrudServicePort;
+import co.edu.udea.nexum.opportunity.common.domain.model.Model;
 
 import java.util.List;
 
