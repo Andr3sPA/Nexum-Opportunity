@@ -21,7 +21,7 @@ import java.util.UUID;
  * Provides API endpoints for managing opportunities.
  */
 @RestController
-@RequestMapping("/api/v1/opportunities")
+@RequestMapping("/v1/opportunities")
 @RequiredArgsConstructor
 @Tag(name = "Opportunities", description = "Opportunity management operations")
 public class OpportunityController {
