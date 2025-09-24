@@ -1,19 +1,17 @@
 package co.edu.udea.nexum.opportunity.opportunity.application.handler;
 
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.stereotype.Component;
+
 import co.edu.udea.nexum.opportunity.opportunity.application.dto.request.OpportunityRequestDto;
 import co.edu.udea.nexum.opportunity.opportunity.application.dto.response.OpportunityResponseDto;
 import co.edu.udea.nexum.opportunity.opportunity.application.mapper.OpportunityDtoMapper;
 import co.edu.udea.nexum.opportunity.opportunity.domain.api.OpportunityServicePort;
 import co.edu.udea.nexum.opportunity.opportunity.domain.model.Opportunity;
 import co.edu.udea.nexum.opportunity.opportunity.domain.model.OpportunityStatus;
-import co.edu.udea.nexum.opportunity.security.domain.model.AuthenticatedUser;
-import co.edu.udea.nexum.opportunity.security.domain.utils.SecurityContextUtils;
-import co.edu.udea.nexum.opportunity.security.domain.utils.enums.RoleName;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Application handler for Opportunity operations.
@@ -22,108 +20,81 @@ import java.util.UUID;
 @Component
 @RequiredArgsConstructor
 public class OpportunityHandler {
-    
+
     private final OpportunityServicePort opportunityServicePort;
     private final OpportunityDtoMapper opportunityDtoMapper;
-    private final SecurityContextUtils securityContextUtils;
-    
-    // New methods using request/response DTOs
+
     public OpportunityResponseDto createOpportunity(OpportunityRequestDto requestDto) {
-        // Get current authenticated user
-        AuthenticatedUser currentUser = securityContextUtils.getCurrentUser();
-        
-        // Map request to domain object
-        Opportunity opportunity = opportunityDtoMapper.toDomainFromRequest(requestDto);
-        
-        // Set createdBy from authenticated user
-        opportunity.setCreatedBy(currentUser.getId());
-        
-        // Save opportunity
+        Opportunity opportunity = opportunityDtoMapper.toDomain(requestDto);
         Opportunity savedOpportunity = opportunityServicePort.save(opportunity);
-        
-        // Return response DTO
-        return opportunityDtoMapper.toResponseDto(savedOpportunity);
+        return opportunityDtoMapper.toResponse(savedOpportunity);
     }
-    
+
     public List<OpportunityResponseDto> getAllOpportunities() {
         List<Opportunity> opportunities = opportunityServicePort.findAllOpportunities();
-        return opportunityDtoMapper.toResponseDtos(opportunities);
+        return opportunityDtoMapper.toResponses(opportunities);
     }
-    
+
     public OpportunityResponseDto getOpportunityById(Long id) {
         Opportunity opportunity = opportunityServicePort.findById(id);
-        return opportunityDtoMapper.toResponseDto(opportunity);
+        return opportunityDtoMapper.toResponse(opportunity);
     }
-    
+
     public OpportunityResponseDto updateOpportunity(Long id, OpportunityRequestDto requestDto) {
-        // Get current authenticated user
-        AuthenticatedUser currentUser = securityContextUtils.getCurrentUser();
-        
-        // Check if user can update this opportunity
+        // Get existing opportunity to preserve system fields
         Opportunity existingOpportunity = opportunityServicePort.findById(id);
-        validateUserCanModifyOpportunity(currentUser, existingOpportunity);
         
-        // Map request to domain object
-        Opportunity opportunity = opportunityDtoMapper.toDomainFromRequest(requestDto);
+        // Create updated opportunity using builder with existing values
+        Opportunity.OpportunityBuilder updatedBuilder = Opportunity.builder()
+                .id(existingOpportunity.getId())
+                .createdBy(existingOpportunity.getCreatedBy())
+                .creationDate(existingOpportunity.getCreationDate())
+                .lastUpdate(existingOpportunity.getLastUpdate())
+                .graduateId(existingOpportunity.getGraduateId())
+                .salaryRange(existingOpportunity.getSalaryRange())
+                .title(existingOpportunity.getTitle())
+                .description(existingOpportunity.getDescription())
+                .location(existingOpportunity.getLocation())
+                .status(existingOpportunity.getStatus());
         
-        // Preserve the original createdBy field
-        opportunity.setCreatedBy(existingOpportunity.getCreatedBy());
+        // Update only the provided fields from the request
+        if (requestDto.getTitle() != null) {
+            updatedBuilder.title(requestDto.getTitle());
+        }
+        if (requestDto.getDescription() != null) {
+            updatedBuilder.description(requestDto.getDescription());
+        }
+        if (requestDto.getLocation() != null) {
+            updatedBuilder.location(requestDto.getLocation());
+        }
+        if (requestDto.getStatus() != null) {
+            updatedBuilder.status(requestDto.getStatus());
+        }
+        if (requestDto.getGraduateId() != null) {
+            updatedBuilder.graduateId(requestDto.getGraduateId());
+        }
+        if (requestDto.getSalaryRange() != null) {
+            // Map the salary range DTO to domain object
+            updatedBuilder.salaryRange(opportunityDtoMapper.toDomain(requestDto).getSalaryRange());
+        }
         
-        // Update opportunity
-        Opportunity updatedOpportunity = opportunityServicePort.updateById(id, opportunity);
-        
-        // Return response DTO
-        return opportunityDtoMapper.toResponseDto(updatedOpportunity);
+        Opportunity updatedOpportunity = opportunityServicePort.updateById(id, updatedBuilder.build());
+        return opportunityDtoMapper.toResponse(updatedOpportunity);
     }
-    
+
     public OpportunityResponseDto deleteOpportunity(Long id) {
-        // Get current authenticated user
-        AuthenticatedUser currentUser = securityContextUtils.getCurrentUser();
-        
-        // Check if user can delete this opportunity
-        Opportunity existingOpportunity = opportunityServicePort.findById(id);
-        validateUserCanModifyOpportunity(currentUser, existingOpportunity);
-        
-        // Delete opportunity
         Opportunity deletedOpportunity = opportunityServicePort.deleteById(id);
-        
-        // Return response DTO
-        return opportunityDtoMapper.toResponseDto(deletedOpportunity);
+        return opportunityDtoMapper.toResponse(deletedOpportunity);
     }
-    
+
     public List<OpportunityResponseDto> getOpportunitiesByGraduateId(UUID graduateId) {
         List<Opportunity> opportunities = opportunityServicePort.findByGraduateId(graduateId);
-        return opportunityDtoMapper.toResponseDtos(opportunities);
+        return opportunityDtoMapper.toResponses(opportunities);
     }
-    
+
     public OpportunityResponseDto updateOpportunityStatus(Long id, OpportunityStatus newStatus) {
-        // Get current authenticated user
-        AuthenticatedUser currentUser = securityContextUtils.getCurrentUser();
-        
-        // Check if user can update this opportunity
-        Opportunity existingOpportunity = opportunityServicePort.findById(id);
-        validateUserCanModifyOpportunity(currentUser, existingOpportunity);
-        
-        // Update status
         Opportunity updatedOpportunity = opportunityServicePort.updateStatus(id, newStatus);
-        
-        // Return response DTO
-        return opportunityDtoMapper.toResponseDto(updatedOpportunity);
+        return opportunityDtoMapper.toResponse(updatedOpportunity);
     }
     
-    private void validateUserCanModifyOpportunity(AuthenticatedUser currentUser, Opportunity opportunity) {
-        // Admin can modify any opportunity
-        if (currentUser.getRole() == RoleName.ADMIN) {
-            return;
-        }
-        
-        // Employer can only modify opportunities they created
-        if (currentUser.getRole() == RoleName.EMPLOYER && 
-            opportunity.getCreatedBy().equals(currentUser.getId())) {
-            return;
-        }
-        
-        // Otherwise, access denied
-        throw new IllegalArgumentException("User is not authorized to modify this opportunity");
-    }
 }

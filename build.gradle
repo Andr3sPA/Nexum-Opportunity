@@ -87,6 +87,9 @@ def jacocoExclude = [
 
 test {
     useJUnitPlatform()
+    // Use H2 in-memory database for tests via application-test.yml
+    // This avoids needing to connect to PostgreSQL during testing
+    systemProperty 'spring.profiles.active', 'test'
     finalizedBy jacocoTestReport
 }
 
@@ -107,20 +110,37 @@ jacocoTestReport {
     }
 }
 
-tasks.named('bootRun') {
-    doFirst {
-        file('.env').readLines().each() {
-            def (key, value) = it.tokenize('=')
-            environment key, value
+def loadEnvFile() {
+    def envFile = file('.env')
+    def envVars = [:]
+    
+    if (envFile.exists()) {
+        envFile.readLines().each { line ->
+            if (line && !line.startsWith('#') && line.contains('=')) {
+                def (key, value) = line.split('=', 2)
+                if (key && value) {
+                    def cleanKey = key.trim()
+                    def cleanValue = value.trim()
+                    // Remove quotes if present
+                    if (cleanValue.startsWith('"') && cleanValue.endsWith('"')) {
+                        cleanValue = cleanValue.substring(1, cleanValue.length() - 1)
+                    }
+                    envVars[cleanKey] = cleanValue
+                    System.setProperty(cleanKey, cleanValue)
+                }
+            }
         }
     }
+    return envVars
 }
 
-tasks.named('test') {
+tasks.named('bootRun') {
     doFirst {
-        file('.env').readLines().each() {
-            def (key, value) = it.tokenize('=')
-            environment key, value
+        def envVars = loadEnvFile()
+        environment(envVars)
+        println "Loaded environment variables for bootRun:"
+        envVars.each { key, value -> 
+            println "  ${key}: ${value}"
         }
     }
 }

@@ -1,0 +1,57 @@
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE
+    username: sa
+    password: ""
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create-drop
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        format_sql: false
+    database-platform: org.hibernate.dialect.H2Dialect
+    show-sql: false
+    database: h2
+
+  output:
+    ansi:
+      enabled: ALWAYS
+
+  # Disable external service calls for tests
+  cloud:
+    openfeign:
+      client:
+        config:
+          default:
+            connectTimeout: 1000
+            readTimeout: 1000
+
+logging:
+  level:
+    root: INFO
+    org.springframework: DEBUG
+    org.springframework.web: DEBUG
+    feign: DEBUG
+    co.edu.udea.nexum.opportunity: DEBUG
+
+server:
+  servlet:
+    context-path: /nexum
+  port: 8120
+
+nexum:
+  profile:
+    base_url: http://localhost:8100/nexum/v1
+
+allowed-origins: http://localhost:3000/, http://localhost:3001/
+
+# Disable actuator endpoints for tests
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info

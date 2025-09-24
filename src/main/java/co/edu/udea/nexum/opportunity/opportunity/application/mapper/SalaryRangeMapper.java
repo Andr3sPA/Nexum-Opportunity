@@ -5,11 +5,10 @@ import org.mapstruct.ReportingPolicy;
 
 import co.edu.udea.nexum.opportunity.common.application.mapper.BaseRequestMapper;
 import co.edu.udea.nexum.opportunity.common.application.mapper.BaseResponseMapper;
-import co.edu.udea.nexum.opportunity.opportunity.application.dto.request.OpportunityRequestDto;
-import co.edu.udea.nexum.opportunity.opportunity.application.dto.response.OpportunityResponseDto;
-import co.edu.udea.nexum.opportunity.opportunity.domain.model.Opportunity;
+import co.edu.udea.nexum.opportunity.opportunity.application.dto.SalaryRangeDto;
+import co.edu.udea.nexum.opportunity.opportunity.domain.model.SalaryRange;
 
 @Mapper(componentModel = "spring", unmappedSourcePolicy = ReportingPolicy.IGNORE,
         unmappedTargetPolicy = ReportingPolicy.IGNORE)
-public interface OpportunityDtoMapper extends BaseRequestMapper<Opportunity, OpportunityRequestDto>, BaseResponseMapper<Opportunity, OpportunityResponseDto> {
+public interface SalaryRangeMapper extends BaseRequestMapper<SalaryRange, SalaryRangeDto>, BaseResponseMapper<SalaryRange, SalaryRangeDto> {
 }

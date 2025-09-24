@@ -23,11 +23,9 @@ public class Opportunity implements Model<Long>, AuditableModel {
     private OpportunityStatus status;
     private LocalDateTime creationDate;
     private LocalDateTime lastUpdate;
-    
-    // New properties
-    private UUID createdBy; // User UUID who created this opportunity
-    private UUID graduateId; // User UUID the opportunity is directed to (target graduate)
-    private SalaryRange salaryRange; // Salary range for this opportunity
+    private UUID createdBy;
+    private UUID graduateId;
+    private SalaryRange salaryRange;
     
 }
 

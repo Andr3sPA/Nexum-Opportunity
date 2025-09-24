@@ -1,5 +1,6 @@
 package co.edu.udea.nexum.opportunity.opportunity.application.dto.request;
 
+import co.edu.udea.nexum.opportunity.common.application.dto.request.BaseRequest;
 import co.edu.udea.nexum.opportunity.opportunity.application.dto.SalaryRangeDto;
 import co.edu.udea.nexum.opportunity.opportunity.domain.model.OpportunityStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OpportunityRequestDto {
+public class OpportunityRequestDto implements BaseRequest{
     
     @NotBlank(message = "Title is required")
     private String title;

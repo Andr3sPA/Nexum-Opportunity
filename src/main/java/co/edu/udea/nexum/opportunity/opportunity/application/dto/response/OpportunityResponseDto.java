@@ -1,5 +1,6 @@
 package co.edu.udea.nexum.opportunity.opportunity.application.dto.response;
 
+import co.edu.udea.nexum.opportunity.common.application.dto.response.BaseResponse;
 import co.edu.udea.nexum.opportunity.opportunity.application.dto.SalaryRangeDto;
 import co.edu.udea.nexum.opportunity.opportunity.domain.model.OpportunityStatus;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -20,7 +21,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OpportunityResponseDto {
+public class OpportunityResponseDto implements BaseResponse {
     
     private Long id;
     
