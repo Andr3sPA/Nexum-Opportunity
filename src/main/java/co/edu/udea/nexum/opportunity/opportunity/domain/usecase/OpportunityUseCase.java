@@ -131,7 +131,7 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
         }
         
         opportunity.setStatus(newStatus);
-        return update(id, opportunity);
+        return updateById(id, opportunity);
     }
 
     @Override
@@ -178,10 +178,10 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
     }
 
     @Override
-    public Opportunity update(Long id, Opportunity opportunity) {
+    public Opportunity updateById(Long id, Opportunity opportunity) {
         // Ensure the opportunity exists and is accessible by the current user
         Opportunity existingOpportunity = findById(id);
         Opportunity patchedOpportunity = patch(existingOpportunity, opportunity);
         validateEntity(id, patchedOpportunity);
-        return updateById(id, patchedOpportunity);
+        return super.updateById(id, patchedOpportunity);
     }}
