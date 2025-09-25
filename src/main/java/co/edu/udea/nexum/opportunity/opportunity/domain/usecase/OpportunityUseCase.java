@@ -90,7 +90,7 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
         List<Opportunity> opportunities = opportunityPersistencePort.findByGraduateId(graduateId);
         
         // Apply role-based filtering
-        if (currentUser.getRole() == RoleName.ADMIN) {
+        if (currentUser.getRole() == RoleName.ADMIN || currentUser.getRole() == RoleName.ADMINISTRATIVE) {
             // Admin can see all opportunities for the graduate
             return opportunities;
         } else if (currentUser.getRole() == RoleName.EMPLOYER) {
@@ -108,22 +108,19 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
     public Opportunity updateStatus(Long id, OpportunityStatus newStatus) {
         Opportunity opportunity = findById(id);
         
-        // Validate the new status (add your business rules here)
         if (newStatus == null) {
             throw new IllegalArgumentException("Status cannot be null");
         }
         
         opportunity.setStatus(newStatus);
-        return opportunityPersistencePort.update(opportunity);
+        return updateById(id, opportunity);
     }
 
     @Override
     public List<Opportunity> findAllOpportunities() {
-        // Get current authenticated user using the security utility
         AuthenticatedUser currentUser = securityContextUtils.getCurrentUser();
         
-        // Check user role and return appropriate opportunities
-        if (currentUser.getRole() == RoleName.ADMIN) {
+        if (currentUser.getRole() == RoleName.ADMIN || currentUser.getRole() == RoleName.ADMINISTRATIVE) {
             // Admin can see all opportunities
             return findAll();
         } else if (currentUser.getRole() == RoleName.EMPLOYER) {
@@ -137,10 +134,8 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
 
     @Override
     public Opportunity findById(Long id) {
-        // Get current authenticated user using the security utility
         AuthenticatedUser currentUser = securityContextUtils.getCurrentUser();
         
-        // First, try to find the opportunity using parent's findById
         Opportunity opportunity;
         try {
             opportunity = super.findById(id);
@@ -150,7 +145,7 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
         }
         
         // Admin can access any opportunity
-        if (currentUser.getRole() == RoleName.ADMIN) {
+        if (currentUser.getRole() == RoleName.ADMIN || currentUser.getRole() == RoleName.ADMINISTRATIVE) {
             return opportunity;
         }
         
