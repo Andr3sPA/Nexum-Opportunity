@@ -1,5 +1,10 @@
 package co.edu.udea.nexum.opportunity.opportunity.domain.usecase;
 
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.stereotype.Service;
+
 import co.edu.udea.nexum.opportunity.common.domain.spi.BaseCrudPersistencePort;
 import co.edu.udea.nexum.opportunity.common.domain.usecase.AuditableCrudUseCase;
 import co.edu.udea.nexum.opportunity.common.domain.utils.functions.CommonHelpers;
@@ -12,10 +17,6 @@ import co.edu.udea.nexum.opportunity.security.domain.model.AuthenticatedUser;
 import co.edu.udea.nexum.opportunity.security.domain.utils.SecurityContextUtils;
 import co.edu.udea.nexum.opportunity.security.domain.utils.enums.RoleName;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.UUID;
 
 /**
  * Use case implementation for Opportunity business operations.
@@ -58,6 +59,23 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
         // Validate createdBy if present
         if (model.getCreatedBy() == null || model.getCreatedBy().toString().trim().isEmpty()) {
             throw new IllegalArgumentException("createdBy UUID cannot be empty");
+        }
+        
+        // Validate mandatory contract basic data fields
+        if (model.getContractType() == null) {
+            throw new IllegalArgumentException("Contract type is required");
+        }
+        
+        if (model.getStartDate() == null) {
+            throw new IllegalArgumentException("Start date is required");
+        }
+        
+        if (model.getDurationInMonths() == null) {
+            throw new IllegalArgumentException("Duration is required");
+        }
+        
+        if (model.getDurationInMonths() != null && model.getDurationInMonths() < 0) {
+            throw new IllegalArgumentException("Duration cannot be negative");
         }
     }
     
@@ -113,7 +131,7 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
         }
         
         opportunity.setStatus(newStatus);
-        return updateById(id, opportunity);
+        return update(id, opportunity);
     }
 
     @Override
@@ -157,4 +175,13 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
         
         // For any other case (employer trying to access someone else's opportunity), return not found
         throw new OpportunityNotFoundException(id);
+    }
+
+    @Override
+    public Opportunity update(Long id, Opportunity opportunity) {
+        // Ensure the opportunity exists and is accessible by the current user
+        Opportunity existingOpportunity = findById(id);
+        Opportunity patchedOpportunity = patch(existingOpportunity, opportunity);
+        validateEntity(id, patchedOpportunity);
+        return updateById(id, patchedOpportunity);
     }}

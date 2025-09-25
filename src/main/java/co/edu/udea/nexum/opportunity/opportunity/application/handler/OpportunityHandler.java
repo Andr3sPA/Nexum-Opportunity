@@ -41,44 +41,8 @@ public class OpportunityHandler {
     }
 
     public OpportunityResponseDto updateOpportunity(Long id, OpportunityRequestDto requestDto) {
-        // Get existing opportunity to preserve system fields
-        Opportunity existingOpportunity = opportunityServicePort.findById(id);
-        
-        // Create updated opportunity using builder with existing values
-        Opportunity.OpportunityBuilder updatedBuilder = Opportunity.builder()
-                .id(existingOpportunity.getId())
-                .createdBy(existingOpportunity.getCreatedBy())
-                .creationDate(existingOpportunity.getCreationDate())
-                .lastUpdate(existingOpportunity.getLastUpdate())
-                .graduateId(existingOpportunity.getGraduateId())
-                .salaryRange(existingOpportunity.getSalaryRange())
-                .title(existingOpportunity.getTitle())
-                .description(existingOpportunity.getDescription())
-                .location(existingOpportunity.getLocation())
-                .status(existingOpportunity.getStatus());
-        
-        // Update only the provided fields from the request
-        if (requestDto.getTitle() != null) {
-            updatedBuilder.title(requestDto.getTitle());
-        }
-        if (requestDto.getDescription() != null) {
-            updatedBuilder.description(requestDto.getDescription());
-        }
-        if (requestDto.getLocation() != null) {
-            updatedBuilder.location(requestDto.getLocation());
-        }
-        if (requestDto.getStatus() != null) {
-            updatedBuilder.status(requestDto.getStatus());
-        }
-        if (requestDto.getGraduateId() != null) {
-            updatedBuilder.graduateId(requestDto.getGraduateId());
-        }
-        if (requestDto.getSalaryRange() != null) {
-            // Map the salary range DTO to domain object
-            updatedBuilder.salaryRange(opportunityDtoMapper.toDomain(requestDto).getSalaryRange());
-        }
-        
-        Opportunity updatedOpportunity = opportunityServicePort.updateById(id, updatedBuilder.build());
+        Opportunity opportunity = opportunityDtoMapper.toDomain(requestDto);
+        Opportunity updatedOpportunity = opportunityServicePort.updateById(id, opportunity);
         return opportunityDtoMapper.toResponse(updatedOpportunity);
     }
 

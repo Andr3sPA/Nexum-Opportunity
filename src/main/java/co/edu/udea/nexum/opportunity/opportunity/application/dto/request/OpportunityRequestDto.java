@@ -1,16 +1,21 @@
 package co.edu.udea.nexum.opportunity.opportunity.application.dto.request;
 
+import java.time.LocalDate;
+import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonInclude;
+
 import co.edu.udea.nexum.opportunity.common.application.dto.request.BaseRequest;
 import co.edu.udea.nexum.opportunity.opportunity.application.dto.SalaryRangeDto;
+import co.edu.udea.nexum.opportunity.opportunity.domain.model.ContractType;
+import co.edu.udea.nexum.opportunity.opportunity.domain.model.ExperienceLevel;
 import co.edu.udea.nexum.opportunity.opportunity.domain.model.OpportunityStatus;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import co.edu.udea.nexum.opportunity.opportunity.domain.model.WorkModality;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
-import java.util.UUID;
 
 /**
  * Data Transfer Object for Opportunity creation and update requests.
@@ -35,4 +40,20 @@ public class OpportunityRequestDto implements BaseRequest{
     private UUID graduateId; // Target graduate for this opportunity
     
     private SalaryRangeDto salaryRange;
+    
+    // Contract basic data fields (mandatory for creation, optional for updates)
+    private ContractType contractType;
+    
+    private LocalDate startDate;
+    
+    private Integer durationInMonths; // Duration in months, null for indefinite
+    
+    // Additional opportunity description fields (optional according to requirements)
+    private String complementaryStudies;
+    
+    private ExperienceLevel requiredExperience;
+    
+    private Boolean travelAvailability; // null means not specified
+    
+    private WorkModality workModality;
 }

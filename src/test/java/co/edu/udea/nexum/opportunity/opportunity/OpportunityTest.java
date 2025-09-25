@@ -4,6 +4,9 @@ import co.edu.udea.nexum.opportunity.security.domain.model.AuthenticatedUser;
 import co.edu.udea.nexum.opportunity.security.domain.utils.SecurityContextUtils;
 import co.edu.udea.nexum.opportunity.security.domain.utils.enums.RoleName;
 import co.edu.udea.nexum.opportunity.security.infrastructure.output.feign.client.AuthFeign;
+import co.edu.udea.nexum.opportunity.opportunity.domain.model.ContractType;
+import co.edu.udea.nexum.opportunity.opportunity.domain.model.ExperienceLevel;
+import co.edu.udea.nexum.opportunity.opportunity.domain.model.WorkModality;
 import co.edu.udea.nexum.opportunity.opportunity.infrastructure.output.jpa.entity.OpportunityEntity;
 import co.edu.udea.nexum.opportunity.opportunity.domain.model.OpportunityStatus;
 import co.edu.udea.nexum.opportunity.opportunity.infrastructure.output.jpa.repository.OpportunityJpaRepository;
@@ -25,6 +28,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -107,7 +111,14 @@ class OpportunityTest {
                 "salaryMin": 5000000,
                 "salaryMax": 8000000,
                 "salaryCurrency": "COP",
-                "graduateId": "%s"
+                "graduateId": "%s",
+                "contractType": "FULL_TIME",
+                "startDate": "2024-01-15",
+                "durationInMonths": 12,
+                "complementaryStudies": "Spring Boot certification preferred",
+                "requiredExperience": "4-6 years",
+                "travelAvailability": false,
+                "workModality": "HYBRID"
             }
             """, graduateId != null ? graduateId.toString() : TARGET_GRADUATE_ID.toString());
     }
@@ -123,6 +134,15 @@ class OpportunityTest {
                 .salaryMin(BigDecimal.valueOf(3000000))
                 .salaryMax(BigDecimal.valueOf(5000000))
                 .salaryCurrency("COP")
+                // New mandatory fields
+                .contractType(ContractType.FULL_TIME)
+                .startDate(LocalDate.of(2024, 2, 1))
+                .durationInMonths(12)
+                // Optional fields
+                .complementaryStudies("Basic programming knowledge")
+                .requiredExperience(ExperienceLevel.TWO_TO_FOUR_YEARS)
+                .travelAvailability(false)
+                .workModality(WorkModality.ON_SITE)
                 .build();
         return opportunityRepository.save(opportunity);
     }

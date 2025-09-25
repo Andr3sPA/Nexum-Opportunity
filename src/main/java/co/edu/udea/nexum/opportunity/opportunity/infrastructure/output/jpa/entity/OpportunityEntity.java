@@ -1,6 +1,10 @@
 package co.edu.udea.nexum.opportunity.opportunity.infrastructure.output.jpa.entity;
 
 import co.edu.udea.nexum.opportunity.common.infrastructure.output.jpa.entity.NexumEntity;
+import co.edu.udea.nexum.opportunity.opportunity.domain.model.ContractType;
+import co.edu.udea.nexum.opportunity.opportunity.domain.model.ExperienceLevel;
+import co.edu.udea.nexum.opportunity.opportunity.domain.model.OpportunityStatus;
+import co.edu.udea.nexum.opportunity.opportunity.domain.model.WorkModality;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -8,10 +12,9 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
-
-import co.edu.udea.nexum.opportunity.opportunity.domain.model.OpportunityStatus;
 
 /**
  * JPA Entity for Opportunity.
@@ -34,9 +37,6 @@ public class OpportunityEntity implements NexumEntity<Long> {
     
     @Column(name = "description", columnDefinition = "TEXT")
     private String description;
-    
-    @Column(name = "location")
-    private String location;
     
     @Enumerated(EnumType.STRING)
     @Column(name = "status")
@@ -65,7 +65,34 @@ public class OpportunityEntity implements NexumEntity<Long> {
     @Column(name = "salary_currency", length = 3)
     private String salaryCurrency; // ISO currency code (USD, EUR, etc.)
     
-    // TODO: Add additional fields based on your business requirements
+    // Contract basic data fields (mandatory according to requirements)
+    @Enumerated(EnumType.STRING)
+    @Column(name = "contract_type")
+    private ContractType contractType;
+    
+    @Column(name = "start_date")
+    private LocalDate startDate;
+    
+    @Column(name = "duration_in_months")
+    private Integer durationInMonths; // Duration in months, null for indefinite
+    
+    // Additional opportunity description fields (optional according to requirements)
+    @Column(name = "complementary_studies", columnDefinition = "TEXT")
+    private String complementaryStudies;
+    
+    @Column(name = "required_experience")
+    @Enumerated(EnumType.STRING)
+    private ExperienceLevel requiredExperience;
+        
+    @Column(name = "location")
+    private String location;
+
+    @Column(name = "travel_availability")
+    private Boolean travelAvailability; // null means not specified
+    
+    @Enumerated(EnumType.STRING)
+    @Column(name = "work_modality")
+    private WorkModality workModality;
     
     @PrePersist
     protected void onCreate() {
