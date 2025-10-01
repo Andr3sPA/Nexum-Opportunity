@@ -1,0 +1,13 @@
+image:
+  file: .gitpod.Dockerfile
+
+tasks:
+  - name: Build and run Spring Boot app
+    init: ./gradlew build
+    command: ./gradlew bootRun
+
+vscode:
+  extensions:
+    - vscjava.vscode-java-pack
+    - vmware.vscode-boot-dev-pack
+    - gabrielbb.vscode-lombok
