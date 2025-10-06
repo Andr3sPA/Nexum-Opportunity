@@ -13,6 +13,4 @@ import lombok.Setter;
 public class ApplicationRequest {
     @NotNull
     private Long opportunityId;
-
-    private String userId;
 }
