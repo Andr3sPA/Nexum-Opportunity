@@ -41,8 +41,16 @@ public class OpportunityController {
     @GetMapping
     @Operation(summary = "Get all opportunities created by the current employer if not admin, else get all")
     @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE')")
+    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE') or hasRole('GRADUATE')")
     public ResponseEntity<List<OpportunityResponseDto>> getAllOpportunities() {
+        // Log para depuración: mostrar roles del usuario autenticado
+        org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OpportunityController.class);
+        org.springframework.security.core.Authentication authentication = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null) {
+            logger.info("Usuario autenticado: {} - Authorities: {}", authentication.getName(), authentication.getAuthorities());
+        } else {
+            logger.warn("No hay usuario autenticado en el contexto de seguridad");
+        }
         List<OpportunityResponseDto> opportunities = opportunityHandler.getAllOpportunities();
         return ResponseEntity.ok(opportunities);
     }
@@ -50,7 +58,7 @@ public class OpportunityController {
     @GetMapping("/{id}")
     @Operation(summary = "Get opportunity by ID")
     @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE')")
+    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE') or hasRole('GRADUATE')")
     public ResponseEntity<OpportunityResponseDto> getOpportunityById(@PathVariable Long id) {
         OpportunityResponseDto opportunity = opportunityHandler.getOpportunityById(id);
         return ResponseEntity.ok(opportunity);
@@ -79,7 +87,7 @@ public class OpportunityController {
     @GetMapping("/graduate/{graduateId}")
     @Operation(summary = "Get opportunities directed to a specific graduate")
     @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE')")
+    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE') or hasRole('GRADUATE')")
     public ResponseEntity<List<OpportunityResponseDto>> getOpportunitiesByGraduateId(@PathVariable UUID graduateId) {
         List<OpportunityResponseDto> opportunities = opportunityHandler.getOpportunitiesByGraduateId(graduateId);
         return ResponseEntity.ok(opportunities);

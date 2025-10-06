@@ -137,15 +137,17 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
     @Override
     public List<Opportunity> findAllOpportunities() {
         AuthenticatedUser currentUser = securityContextUtils.getCurrentUser();
-        
         if (currentUser.getRole() == RoleName.ADMIN || currentUser.getRole() == RoleName.ADMINISTRATIVE) {
-            // Admin can see all opportunities
+            // Admin puede ver todas las oportunidades
             return findAll();
         } else if (currentUser.getRole() == RoleName.EMPLOYER) {
-            // Employer can only see opportunities they created
+            // Employer solo ve las que creó
             return findByCreatedBy(currentUser.getId());
+        } else if (currentUser.getRole() == RoleName.GRADUATE) {
+            // Graduate puede ver solo las oportunidades activas
+            return findByStatus(OpportunityStatus.ACTIVE);
         } else {
-            // Other roles are not allowed to access opportunities
+            // Otros roles no pueden ver oportunidades
             throw new IllegalArgumentException("User role '" + currentUser.getRole() + "' is not authorized to access opportunities");
         }
     }
