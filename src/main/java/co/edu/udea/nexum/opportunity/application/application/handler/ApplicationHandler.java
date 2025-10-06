@@ -18,10 +18,15 @@ public class ApplicationHandler {
     private final ApplicationRequestMapper applicationRequestMapper;
 
     public Application save(ApplicationRequest request) {
-        Application applicationToSave = applicationRequestMapper.toDomain(request, securityContextUtils.getCurrentUser().getId());
+        String userId = (request.getUserId() == null || request.getUserId().isEmpty())
+                ? securityContextUtils.getCurrentUser().getId()
+                : request.getUserId();
+
+        Application applicationToSave = applicationRequestMapper.toDomain(request, userId);
         return applicationUseCase.save(applicationToSave);
     }
-    public List<Application> getAll(){
+
+    public List<Application> getAll() {
         return applicationUseCase.findAll();
     }
 }
