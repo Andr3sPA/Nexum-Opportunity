@@ -14,7 +14,7 @@ public interface OpportunityPersistencePort extends BaseCrudPersistencePort<Long
     
     List<Opportunity> findByStatus(OpportunityStatus status);
     List<Opportunity> findByCreatedBy(java.util.UUID createdBy);
-    List<Opportunity> findByGraduateId(java.util.UUID graduateId);
     List<Opportunity> findByLocation(String location);
-    
+    List<Opportunity> findByEditCode(String editCode);
+
 }

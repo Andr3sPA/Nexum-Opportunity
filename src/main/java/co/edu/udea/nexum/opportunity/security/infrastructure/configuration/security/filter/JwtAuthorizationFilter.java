@@ -7,7 +7,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -34,10 +36,11 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             String token = authorizationHeader.substring(TOKEN_PREFIX.length());
 
             setContextAuthentication(request, token);
-
-            filterChain.doFilter(request, response);
-            return;
+        } else {
+            // No token present, set anonymous authentication
+            setAnonymousAuthentication(request);
         }
+
         filterChain.doFilter(request, response);
     }
 
@@ -55,7 +58,17 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         } catch (RuntimeException e) {
             logger.error(e.getMessage());
         }
+    }
 
+    private void setAnonymousAuthentication(HttpServletRequest request) {
+        if (SecurityContextHolder.getContext().getAuthentication() != null) return;
 
+        AnonymousAuthenticationToken anonymousAuth = new AnonymousAuthenticationToken(
+                "anonymous",
+                "anonymousUser",
+                java.util.Collections.singletonList(new SimpleGrantedAuthority("ROLE_ANONYMOUS"))
+        );
+        anonymousAuth.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+        SecurityContextHolder.getContext().setAuthentication(anonymousAuth);
     }
 }

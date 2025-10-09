@@ -29,63 +29,63 @@ import static co.edu.udea.nexum.opportunity.common.infrastructure.utils.constant
 @RequiredArgsConstructor
 @EnableMethodSecurity
 public class SecurityConfiguration {
-    @Value("${allowed-origins}")
-    private List<String> allowedOrigins;
+  @Value("${allowed-origins}")
+  private List<String> allowedOrigins;
 
-    private final JwtAuthorizationFilter jwtAuthorizationFilter;
-    private final AuthenticationProvider authenticationProvider;
-    private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+  private final JwtAuthorizationFilter jwtAuthorizationFilter;
+  private final AuthenticationProvider authenticationProvider;
+  private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-    private static final String[] AUTH_WHITELIST = {
-            // -- Swagger UI
-            "/configuration/ui",
-            "/configuration/security",
-            "/swagger-ui.html",
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
+  private static final String[] AUTH_WHITELIST = {
+      // -- Swagger UI
+      "/configuration/ui",
+      "/configuration/security",
+      "/swagger-ui.html",
+      "/v3/api-docs/**",
+      "/swagger-ui/**",
 
-            // Authentication
-            "/v1/home",
-            "/v1/identity-document-types/**",
-            AUTH_PATH,
-    };
+      // Authentication
+      "/v1/home",
+      "/v1/identity-document-types/**",
+      AUTH_PATH,
 
-    @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        HttpSecurity httpSecurity = http
-                .csrf(AbstractHttpConfigurer::disable)
-                .cors(config -> config.configurationSource(corsConfigurationSource()))
-                .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers(AUTH_WHITELIST).permitAll();
-                    auth.requestMatchers(AUTH_PATH).permitAll();
-                    auth.anyRequest().authenticated();
-                })
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .exceptionHandling(handler ->
-                        handler.authenticationEntryPoint(jwtAuthenticationEntryPoint))
-                .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
-        return httpSecurity.build();
-    }
+      // Opportunities
+      "/v1/opportunities/**",
+  };
 
-    @Bean
-    CorsConfigurationSource corsConfigurationSource() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-        CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowCredentials(ALLOW_CREDENTIALS);
-        configuration.addAllowedHeader(ALLOWED_HEADERS_ALL);
-        configuration.setAllowedOrigins(allowedOrigins);
-        configuration.setAllowedMethods(List.of(
-                ALLOWED_METHOD_PATCH,
-                ALLOWED_METHOD_POST,
-                ALLOWED_METHOD_GET,
-                ALLOWED_METHOD_PUT,
-                ALLOWED_METHOD_DELETE,
-                ALLOWED_METHOD_OPTIONS
-        ));
-        source.registerCorsConfiguration(CORS_CONFIGURATION_PATHS_PATTERN, configuration);
-        return source;
-    }
+  @Bean
+  public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    HttpSecurity httpSecurity = http
+        .csrf(AbstractHttpConfigurer::disable)
+        .cors(config -> config.configurationSource(corsConfigurationSource()))
+        .authorizeHttpRequests(auth -> {
+          auth.requestMatchers(AUTH_WHITELIST).permitAll();
+          auth.requestMatchers(AUTH_PATH).permitAll();
+          auth.anyRequest().authenticated();
+        })
+        .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+        .authenticationProvider(authenticationProvider)
+        .exceptionHandling(handler -> handler.authenticationEntryPoint(jwtAuthenticationEntryPoint))
+        .addFilterBefore(jwtAuthorizationFilter, UsernamePasswordAuthenticationFilter.class);
+    return httpSecurity.build();
+  }
+
+  @Bean
+  CorsConfigurationSource corsConfigurationSource() {
+    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    CorsConfiguration configuration = new CorsConfiguration();
+    configuration.setAllowCredentials(ALLOW_CREDENTIALS);
+    configuration.addAllowedHeader(ALLOWED_HEADERS_ALL);
+    configuration.setAllowedOrigins(allowedOrigins);
+    configuration.setAllowedMethods(List.of(
+        ALLOWED_METHOD_PATCH,
+        ALLOWED_METHOD_POST,
+        ALLOWED_METHOD_GET,
+        ALLOWED_METHOD_PUT,
+        ALLOWED_METHOD_DELETE,
+        ALLOWED_METHOD_OPTIONS));
+    source.registerCorsConfiguration(CORS_CONFIGURATION_PATHS_PATTERN, configuration);
+    return source;
+  }
 
 }

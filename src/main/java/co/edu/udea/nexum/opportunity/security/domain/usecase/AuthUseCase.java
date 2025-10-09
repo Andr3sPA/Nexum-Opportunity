@@ -4,6 +4,7 @@ import co.edu.udea.nexum.opportunity.common.domain.utils.annotations.Generated;
 import co.edu.udea.nexum.opportunity.security.domain.api.security.AuthServicePort;
 import co.edu.udea.nexum.opportunity.security.domain.model.AuthenticatedUser;
 import co.edu.udea.nexum.opportunity.security.domain.spi.security.AuthPersistencePort;
+import java.util.UUID;
 
 @Generated
 public class AuthUseCase implements AuthServicePort {

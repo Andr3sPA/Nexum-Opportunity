@@ -46,6 +46,8 @@ server:
 nexum:
   profile:
     base_url: http://localhost:8100/nexum/v1
+  catalog:
+    base_url: http://localhost:8110/nexum/v1
 
 allowed-origins: http://localhost:3000/, http://localhost:3001/
 

@@ -68,24 +68,24 @@ public class OpportunityJpaAdapter implements OpportunityPersistencePort {
     }
 
     @Override
-    public List<Opportunity> findByGraduateId(UUID graduateId) {
-        List<OpportunityEntity> entities = opportunityJpaRepository.findByGraduateId(graduateId);
-        return opportunityEntityMapper.toDomains(entities);
-    }
-
-    @Override
     public List<Opportunity> findByLocation(String location) {
-        List<OpportunityEntity> entities = opportunityJpaRepository.findByLocation(location);
+        List<OpportunityEntity> entities = opportunityJpaRepository.findByCandidateRequirementsLocation(location);
         return opportunityEntityMapper.toDomains(entities);
     }
 
     public List<Opportunity> findByLocationContaining(String location) {
-        List<OpportunityEntity> entities = opportunityJpaRepository.findByLocationContainingIgnoreCase(location);
+        List<OpportunityEntity> entities = opportunityJpaRepository.findByCandidateRequirementsLocationContainingIgnoreCase(location);
         return opportunityEntityMapper.toDomains(entities);
     }
 
     public List<Opportunity> findByStatusAndCreatedBy(OpportunityStatus status, UUID createdBy) {
         List<OpportunityEntity> entities = opportunityJpaRepository.findByStatusAndCreatedBy(status, createdBy);
+        return opportunityEntityMapper.toDomains(entities);
+    }
+
+    @Override
+    public List<Opportunity> findByEditCode(String editCode) {
+        List<OpportunityEntity> entities = opportunityJpaRepository.findByEditCode(editCode);
         return opportunityEntityMapper.toDomains(entities);
     }
 

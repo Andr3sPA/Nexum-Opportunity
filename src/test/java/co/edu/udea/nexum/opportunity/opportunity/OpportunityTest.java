@@ -4,10 +4,12 @@ import co.edu.udea.nexum.opportunity.security.domain.model.AuthenticatedUser;
 import co.edu.udea.nexum.opportunity.security.domain.utils.SecurityContextUtils;
 import co.edu.udea.nexum.opportunity.security.domain.utils.enums.RoleName;
 import co.edu.udea.nexum.opportunity.security.infrastructure.output.feign.client.AuthFeign;
-import co.edu.udea.nexum.opportunity.opportunity.domain.model.ContractType;
+import co.edu.udea.nexum.opportunity.common.infrastructure.output.feign.client.CatalogFeign;
 import co.edu.udea.nexum.opportunity.opportunity.domain.model.ExperienceLevel;
 import co.edu.udea.nexum.opportunity.opportunity.domain.model.WorkModality;
 import co.edu.udea.nexum.opportunity.opportunity.infrastructure.output.jpa.entity.OpportunityEntity;
+import co.edu.udea.nexum.opportunity.opportunity.infrastructure.output.jpa.entity.BusinessContactEntity;
+import co.edu.udea.nexum.opportunity.opportunity.infrastructure.output.jpa.entity.CandidateRequirementsEntity;
 import co.edu.udea.nexum.opportunity.opportunity.domain.model.OpportunityStatus;
 import co.edu.udea.nexum.opportunity.opportunity.infrastructure.output.jpa.repository.OpportunityJpaRepository;
 
@@ -30,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.mockito.Mockito.when;
@@ -58,12 +61,14 @@ class OpportunityTest {
     @MockitoBean
     private AuthFeign authFeign; // Mock external auth service
 
+    @MockitoBean
+    private CatalogFeign catalogFeign; // Mock external catalog service
+
     // Test data constants
     private static final UUID ADMIN_USER_ID = UUID.fromString("11111111-1111-1111-1111-111111111111");
     private static final UUID EMPLOYER_USER_ID = UUID.fromString("22222222-2222-2222-2222-222222222222");
     private static final UUID OTHER_EMPLOYER_USER_ID = UUID.fromString("33333333-3333-3333-3333-333333333333");
     private static final UUID GRADUATE_USER_ID = UUID.fromString("44444444-4444-4444-4444-444444444444");
-    private static final UUID TARGET_GRADUATE_ID = UUID.fromString("55555555-5555-5555-5555-555555555555");
 
     // Test user instances
     private AuthenticatedUser adminUser;
@@ -102,47 +107,57 @@ class OpportunityTest {
         when(securityContextUtils.getCurrentUser()).thenReturn(user);
     }
 
-    private String createOpportunityJson(UUID graduateId) {
-        return String.format("""
+    private String createOpportunityJson() {
+        return """
             {
                 "title": "Senior Developer Position",
                 "description": "Looking for an experienced developer with Spring Boot experience",
                 "location": "Medellin",
-                "salaryMin": 5000000,
-                "salaryMax": 8000000,
-                "salaryCurrency": "COP",
-                "graduateId": "%s",
-                "contractType": "FULL_TIME",
-                "startDate": "2024-01-15",
-                "durationInMonths": 12,
+                "salaryRangeId": 1,
                 "complementaryStudies": "Spring Boot certification preferred",
-                "requiredExperience": "4-6 years",
+                "requiredExperience": "FOUR_TO_SIX_YEARS",
                 "travelAvailability": false,
-                "workModality": "HYBRID"
+                "workModality": "HYBRID",
+                "expirationDate": "2025-12-31",
+                "businessName": "Test Company",
+                "contactName": "John Doe",
+                "businessEmail": "john@testcompany.com",
+                "businessPhone": "123-456-7890",
+                "coursedProgramIds": [1],
+                "programCompetencyIds": [1],
+                "jobAreaIds": [1]
             }
-            """, graduateId != null ? graduateId.toString() : TARGET_GRADUATE_ID.toString());
+            """;
     }
 
-    private OpportunityEntity createTestOpportunity(UUID createdBy, UUID graduateId) {
+    private OpportunityEntity createTestOpportunity(UUID createdBy) {
+        BusinessContactEntity businessContact = BusinessContactEntity.builder()
+                .businessName("Test Business")
+                .contactName("Test Contact")
+                .businessEmail("test@business.com")
+                .businessPhone("123-456-7890")
+                .build();
+
+        CandidateRequirementsEntity candidateRequirements = CandidateRequirementsEntity.builder()
+                .complementaryStudies("Basic programming knowledge")
+                .requiredExperience(ExperienceLevel.TWO_TO_FOUR_YEARS)
+                .location("Test Location")
+                .travelAvailability(false)
+                .workModality(WorkModality.ON_SITE)
+                .coursedProgramIds(Set.of(1L))
+                .programCompetencyIds(Set.of(1L))
+                .jobAreaIds(Set.of(1L))
+                .build();
+
         OpportunityEntity opportunity = OpportunityEntity.builder()
                 .title("Test Opportunity")
                 .description("Test Description")
-                .location("Test Location")
                 .status(OpportunityStatus.ACTIVE)
                 .createdBy(createdBy)
-                .graduateId(graduateId)
-                .salaryMin(BigDecimal.valueOf(3000000))
-                .salaryMax(BigDecimal.valueOf(5000000))
-                .salaryCurrency("COP")
-                // New mandatory fields
-                .contractType(ContractType.FULL_TIME)
-                .startDate(LocalDate.of(2024, 2, 1))
-                .durationInMonths(12)
-                // Optional fields
-                .complementaryStudies("Basic programming knowledge")
-                .requiredExperience(ExperienceLevel.TWO_TO_FOUR_YEARS)
-                .travelAvailability(false)
-                .workModality(WorkModality.ON_SITE)
+                .salaryRangeId(1L)
+                .expirationDate(LocalDate.of(2025, 12, 31))
+                .businessContact(businessContact)
+                .candidateRequirements(candidateRequirements)
                 .build();
         return opportunityRepository.save(opportunity);
     }
@@ -160,7 +175,7 @@ class OpportunityTest {
             // When & Then
             mockMvc.perform(post("/v1/opportunities")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(createOpportunityJson(TARGET_GRADUATE_ID)))
+                    .content(createOpportunityJson()))
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.title").value("Senior Developer Position"))
                     .andExpect(jsonPath("$.description").value("Looking for an experienced developer with Spring Boot experience"))
@@ -176,7 +191,7 @@ class OpportunityTest {
             // When & Then
             mockMvc.perform(post("/v1/opportunities")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(createOpportunityJson(TARGET_GRADUATE_ID)))
+                    .content(createOpportunityJson()))
                     .andExpect(status().isCreated())
                     .andExpect(jsonPath("$.title").value("Senior Developer Position"))
                     .andExpect(jsonPath("$.location").value("Medellin"));
@@ -191,8 +206,26 @@ class OpportunityTest {
             // When & Then
             mockMvc.perform(post("/v1/opportunities")
                     .contentType(MediaType.APPLICATION_JSON)
-                    .content(createOpportunityJson(TARGET_GRADUATE_ID)))
+                    .content(createOpportunityJson()))
                     .andExpect(status().isForbidden());
+        }
+
+        @Test
+        @DisplayName("ANONYMOUS user can create opportunities")
+        void anonymousUserCanCreateOpportunities() throws Exception {
+            // Given - no security context set (anonymous user)
+
+            // When & Then
+            mockMvc.perform(post("/v1/opportunities")
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(createOpportunityJson()))
+                    .andExpect(status().isCreated())
+                    .andExpect(jsonPath("$.title").value("Senior Developer Position"))
+                    .andExpect(jsonPath("$.location").value("Medellin"))
+                    .andExpect(jsonPath("$.expirationDate").value("2025-12-31"))
+                    .andExpect(jsonPath("$.businessContact.businessName").value("Test Company"))
+                    .andExpect(jsonPath("$.businessContact.contactName").value("John Doe"))
+                    .andExpect(jsonPath("$.candidateRequirements.complementaryStudies").value("Spring Boot certification preferred"));
         }
     }
 
@@ -205,7 +238,7 @@ class OpportunityTest {
         void adminCanAccessAnyOpportunityById() throws Exception {
             // Given
             setSecurityContext(adminUser);
-            OpportunityEntity opportunity = createTestOpportunity(OTHER_EMPLOYER_USER_ID, TARGET_GRADUATE_ID);
+            OpportunityEntity opportunity = createTestOpportunity(OTHER_EMPLOYER_USER_ID);
 
             // When & Then
             mockMvc.perform(get("/v1/opportunities/{id}", opportunity.getId())
@@ -216,11 +249,11 @@ class OpportunityTest {
         }
 
         @Test
-        @DisplayName("EMPLOYER can access own opportunities by ID")  
+        @DisplayName("EMPLOYER can access own opportunities by ID")
         void employerCanAccessOwnOpportunitiesById() throws Exception {
             // Given
             setSecurityContext(employerUser);
-            OpportunityEntity opportunity = createTestOpportunity(EMPLOYER_USER_ID, TARGET_GRADUATE_ID);
+            OpportunityEntity opportunity = createTestOpportunity(EMPLOYER_USER_ID);
 
             // When & Then
             mockMvc.perform(get("/v1/opportunities/{id}", opportunity.getId())
@@ -235,12 +268,27 @@ class OpportunityTest {
         void employerCannotAccessOtherEmployerOpportunities() throws Exception {
             // Given
             setSecurityContext(employerUser);
-            OpportunityEntity opportunity = createTestOpportunity(OTHER_EMPLOYER_USER_ID, TARGET_GRADUATE_ID);
+            OpportunityEntity opportunity = createTestOpportunity(OTHER_EMPLOYER_USER_ID);
 
             // When & Then
             mockMvc.perform(get("/v1/opportunities/{id}", opportunity.getId())
                     .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound()); // Security pattern: return 404 to prevent information disclosure
+        }
+
+        @Test
+        @DisplayName("GRADUATE can access active opportunities by ID")
+        void graduateCanAccessActiveOpportunitiesById() throws Exception {
+            // Given
+            setSecurityContext(graduateUser);
+            OpportunityEntity opportunity = createTestOpportunity(OTHER_EMPLOYER_USER_ID);
+
+            // When & Then
+            mockMvc.perform(get("/v1/opportunities/{id}", opportunity.getId())
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$.id").value(opportunity.getId()))
+                    .andExpect(jsonPath("$.title").value("Test Opportunity"));
         }
     }
 
@@ -253,7 +301,7 @@ class OpportunityTest {
         void adminCanUpdateAnyOpportunity() throws Exception {
             // Given
             setSecurityContext(adminUser);
-            OpportunityEntity opportunity = createTestOpportunity(OTHER_EMPLOYER_USER_ID, TARGET_GRADUATE_ID);
+            OpportunityEntity opportunity = createTestOpportunity(OTHER_EMPLOYER_USER_ID);
 
             String updateJson = """
                 {
@@ -277,7 +325,7 @@ class OpportunityTest {
         void employerCanUpdateOwnOpportunities() throws Exception {
             // Given
             setSecurityContext(employerUser);
-            OpportunityEntity opportunity = createTestOpportunity(EMPLOYER_USER_ID, TARGET_GRADUATE_ID);
+            OpportunityEntity opportunity = createTestOpportunity(EMPLOYER_USER_ID);
 
             String updateJson = """
                 {
@@ -299,7 +347,7 @@ class OpportunityTest {
         void employerCannotUpdateOtherEmployerOpportunities() throws Exception {
             // Given
             setSecurityContext(employerUser);
-            OpportunityEntity opportunity = createTestOpportunity(OTHER_EMPLOYER_USER_ID, TARGET_GRADUATE_ID);
+            OpportunityEntity opportunity = createTestOpportunity(OTHER_EMPLOYER_USER_ID);
 
             String updateJson = """
                 {
@@ -324,7 +372,7 @@ class OpportunityTest {
         void adminCanDeleteAnyOpportunity() throws Exception {
             // Given
             setSecurityContext(adminUser);
-            OpportunityEntity opportunity = createTestOpportunity(OTHER_EMPLOYER_USER_ID, TARGET_GRADUATE_ID);
+            OpportunityEntity opportunity = createTestOpportunity(OTHER_EMPLOYER_USER_ID);
 
             // When & Then
             mockMvc.perform(delete("/v1/opportunities/{id}", opportunity.getId())
@@ -339,7 +387,7 @@ class OpportunityTest {
         void employerCanDeleteOwnOpportunities() throws Exception {
             // Given
             setSecurityContext(employerUser);
-            OpportunityEntity opportunity = createTestOpportunity(EMPLOYER_USER_ID, TARGET_GRADUATE_ID);
+            OpportunityEntity opportunity = createTestOpportunity(EMPLOYER_USER_ID);
 
             // When & Then
             mockMvc.perform(delete("/v1/opportunities/{id}", opportunity.getId())
@@ -354,7 +402,7 @@ class OpportunityTest {
         void employerCannotDeleteOtherEmployerOpportunities() throws Exception {
             // Given
             setSecurityContext(employerUser);
-            OpportunityEntity opportunity = createTestOpportunity(OTHER_EMPLOYER_USER_ID, TARGET_GRADUATE_ID);
+            OpportunityEntity opportunity = createTestOpportunity(OTHER_EMPLOYER_USER_ID);
 
             // When & Then
             mockMvc.perform(delete("/v1/opportunities/{id}", opportunity.getId())
@@ -378,6 +426,20 @@ class OpportunityTest {
             mockMvc.perform(get("/v1/opportunities/{id}", nonExistentId)
                     .contentType(MediaType.APPLICATION_JSON))
                     .andExpect(status().isNotFound());
+        }
+
+        @Test
+        @DisplayName("GRADUATE can list active opportunities")
+        void graduateCanListActiveOpportunities() throws Exception {
+            // Given
+            setSecurityContext(graduateUser);
+            createTestOpportunity(OTHER_EMPLOYER_USER_ID);
+
+            // When & Then
+            mockMvc.perform(get("/v1/opportunities")
+                    .contentType(MediaType.APPLICATION_JSON))
+                    .andExpect(status().isOk())
+                    .andExpect(jsonPath("$[0].title").value("Test Opportunity"));
         }
 
         @Test

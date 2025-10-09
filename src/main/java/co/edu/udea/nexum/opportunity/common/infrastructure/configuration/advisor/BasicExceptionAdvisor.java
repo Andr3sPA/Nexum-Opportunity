@@ -1,6 +1,5 @@
 package co.edu.udea.nexum.opportunity.common.infrastructure.configuration.advisor;
 
-
 import co.edu.udea.nexum.opportunity.common.domain.exception.EntityAlreadyExistsException;
 import co.edu.udea.nexum.opportunity.common.domain.exception.EntityNotFoundException;
 import co.edu.udea.nexum.opportunity.common.domain.exception.NexumException;
@@ -37,7 +36,8 @@ public class BasicExceptionAdvisor {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ValidationExceptionResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ValidationExceptionResponse> handleMethodArgumentNotValidException(
+            MethodArgumentNotValidException e) {
         ValidationExceptionResponse exceptionResponse = ValidationExceptionResponse.builder()
                 .statusCode(e.getStatusCode().value())
                 .status(HttpStatus.resolve(e.getStatusCode().value()))

@@ -16,7 +16,7 @@ public interface OpportunityServicePort extends BaseCrudServicePort<Long, Opport
     List<Opportunity> findAllOpportunities();
     List<Opportunity> findByStatus(OpportunityStatus status);
     List<Opportunity> findByCreatedBy(UUID createdBy);
-    List<Opportunity> findByGraduateId(UUID graduateId);
     Opportunity updateStatus(Long id, OpportunityStatus newStatus);
-    
+    void assignOwnerByEditCode(String editCode, UUID ownerId);
+
 }

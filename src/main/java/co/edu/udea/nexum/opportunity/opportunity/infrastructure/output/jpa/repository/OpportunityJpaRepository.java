@@ -26,29 +26,29 @@ public interface OpportunityJpaRepository extends JpaRepository<OpportunityEntit
      * Spring Data JPA will generate the implementation automatically.
      */
     List<OpportunityEntity> findByCreatedBy(UUID createdBy);
-    
-    /**
-     * Find opportunities directed to a specific graduate.
-     * Spring Data JPA will generate the implementation automatically.
-     */
-    List<OpportunityEntity> findByGraduateId(UUID graduateId);
-    
+
     /**
      * Find opportunities by location.
      * Spring Data JPA will generate the implementation automatically.
      */
-    List<OpportunityEntity> findByLocation(String location);
-    
+    List<OpportunityEntity> findByCandidateRequirementsLocation(String location);
+
     /**
      * Find opportunities by location containing a specific text (case-insensitive).
      * Spring Data JPA will generate the implementation automatically.
      */
-    List<OpportunityEntity> findByLocationContainingIgnoreCase(String location);
+    List<OpportunityEntity> findByCandidateRequirementsLocationContainingIgnoreCase(String location);
     
     /**
      * Find opportunities by status and created by user.
      * Spring Data JPA will generate the implementation automatically.
      */
     List<OpportunityEntity> findByStatusAndCreatedBy(OpportunityStatus status, UUID createdBy);
-    
+
+    /**
+     * Find opportunities by edit code.
+     * Spring Data JPA will generate the implementation automatically.
+     */
+    List<OpportunityEntity> findByEditCode(String editCode);
+
 }

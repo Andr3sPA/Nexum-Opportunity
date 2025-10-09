@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * REST Controller for Opportunity operations.
@@ -25,72 +24,66 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Tag(name = "Opportunities", description = "Opportunity management operations")
 public class OpportunityController {
-    
-    private final OpportunityHandler opportunityHandler;
-    
-    @PostMapping
-    @Operation(summary = "Create a new opportunity")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE')")
-    public ResponseEntity<OpportunityResponseDto> createOpportunity(
-            @Valid @RequestBody OpportunityRequestDto requestDto) {
-        OpportunityResponseDto createdOpportunity = opportunityHandler.createOpportunity(requestDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(createdOpportunity);
-    }
-    
-    @GetMapping
-    @Operation(summary = "Get all opportunities created by the current employer if not admin, else get all")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE') or hasRole('GRADUATE')")
-    public ResponseEntity<List<OpportunityResponseDto>> getAllOpportunities() {
-        // Log para depuración: mostrar roles del usuario autenticado
-        org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(OpportunityController.class);
-        org.springframework.security.core.Authentication authentication = org.springframework.security.core.context.SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null) {
-            logger.info("Usuario autenticado: {} - Authorities: {}", authentication.getName(), authentication.getAuthorities());
-        } else {
-            logger.warn("No hay usuario autenticado en el contexto de seguridad");
-        }
-        List<OpportunityResponseDto> opportunities = opportunityHandler.getAllOpportunities();
-        return ResponseEntity.ok(opportunities);
-    }
-    
-    @GetMapping("/{id}")
-    @Operation(summary = "Get opportunity by ID")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE') or hasRole('GRADUATE')")
-    public ResponseEntity<OpportunityResponseDto> getOpportunityById(@PathVariable Long id) {
-        OpportunityResponseDto opportunity = opportunityHandler.getOpportunityById(id);
-        return ResponseEntity.ok(opportunity);
-    }
-    
-    @PutMapping("/{id}")
-    @Operation(summary = "Update opportunity by ID - only the creator or admin can update")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE')")
-    public ResponseEntity<OpportunityResponseDto> updateOpportunity(
-            @PathVariable Long id,
-            @Valid @RequestBody OpportunityRequestDto requestDto) {
-        OpportunityResponseDto updatedOpportunity = opportunityHandler.updateOpportunity(id, requestDto);
-        return ResponseEntity.ok(updatedOpportunity);
-    }
-    
-    @DeleteMapping("/{id}")
-    @Operation(summary = "Delete opportunity by ID - only the creator or admin can delete")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE')")
-    public ResponseEntity<OpportunityResponseDto> deleteOpportunity(@PathVariable Long id) {
-        OpportunityResponseDto deletedOpportunity = opportunityHandler.deleteOpportunity(id);
-        return ResponseEntity.ok(deletedOpportunity);
-    }
-    
-    @GetMapping("/graduate/{graduateId}")
-    @Operation(summary = "Get opportunities directed to a specific graduate")
-    @SecurityRequirement(name = "bearerAuth")
-    @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE') or hasRole('GRADUATE')")
-    public ResponseEntity<List<OpportunityResponseDto>> getOpportunitiesByGraduateId(@PathVariable UUID graduateId) {
-        List<OpportunityResponseDto> opportunities = opportunityHandler.getOpportunitiesByGraduateId(graduateId);
-        return ResponseEntity.ok(opportunities);
-    }
-    
+
+  private final OpportunityHandler opportunityHandler;
+
+  @PostMapping
+  @Operation(summary = "Create a new opportunity")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ANONYMOUS')")
+  public ResponseEntity<OpportunityResponseDto> createOpportunity(
+      @Valid @RequestBody OpportunityRequestDto requestDto) {
+    OpportunityResponseDto createdOpportunity = opportunityHandler.createOpportunity(requestDto);
+    return ResponseEntity.status(HttpStatus.CREATED).body(createdOpportunity);
+  }
+
+  @GetMapping
+  @Operation(summary = "Get opportunities based on user role: employers see their own, graduates see active opportunities, admins see all")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE') or hasRole('GRADUATE')")
+  public ResponseEntity<List<OpportunityResponseDto>> getAllOpportunities() {
+    List<OpportunityResponseDto> opportunities = opportunityHandler.getAllOpportunities();
+    return ResponseEntity.ok(opportunities);
+  }
+
+  @GetMapping("/{id}")
+  @Operation(summary = "Get opportunity by ID")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE') or hasRole('GRADUATE')")
+  public ResponseEntity<OpportunityResponseDto> getOpportunityById(@PathVariable("id") Long id) {
+    OpportunityResponseDto opportunity = opportunityHandler.getOpportunityById(id);
+    return ResponseEntity.ok(opportunity);
+  }
+
+  @PutMapping("/{id}")
+  @Operation(summary = "Update opportunity by ID - only the creator or admin can update")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE')")
+  public ResponseEntity<OpportunityResponseDto> updateOpportunity(
+      @PathVariable("id") Long id,
+      @Valid @RequestBody OpportunityRequestDto requestDto) {
+    OpportunityResponseDto updatedOpportunity = opportunityHandler.updateOpportunity(id, requestDto);
+    return ResponseEntity.ok(updatedOpportunity);
+  }
+
+  @DeleteMapping("/{id}")
+  @Operation(summary = "Delete opportunity by ID - only the creator or admin can delete")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE')")
+  public ResponseEntity<OpportunityResponseDto> deleteOpportunity(@PathVariable("id") Long id) {
+    OpportunityResponseDto deletedOpportunity = opportunityHandler.deleteOpportunity(id);
+    return ResponseEntity.ok(deletedOpportunity);
+  }
+
+  @PutMapping("/assign-owner/{editCode}")
+  @Operation(summary = "Assign owner to opportunities by edit code - used when anonymous user registers as employer")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('ADMINISTRATIVE') or hasRole('ANONYMOUS')")
+  public ResponseEntity<Void> assignOwnerByEditCode(
+      @PathVariable("editCode") String editCode,
+      @RequestBody String ownerId) {
+    opportunityHandler.assignOwnerByEditCode(editCode, ownerId);
+    return ResponseEntity.ok().build();
+  }
+
 }
