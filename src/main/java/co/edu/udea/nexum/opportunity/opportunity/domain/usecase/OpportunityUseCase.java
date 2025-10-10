@@ -17,8 +17,6 @@ import co.edu.udea.nexum.opportunity.opportunity.domain.exception.OpportunityNot
 import co.edu.udea.nexum.opportunity.opportunity.domain.model.Opportunity;
 import co.edu.udea.nexum.opportunity.opportunity.domain.model.OpportunityStatus;
 import co.edu.udea.nexum.opportunity.opportunity.domain.spi.OpportunityPersistencePort;
-import co.edu.udea.nexum.opportunity.opportunity.infrastructure.output.feign.client.UserFeign;
-import co.edu.udea.nexum.opportunity.opportunity.infrastructure.output.feign.dto.response.BasicUserResponse;
 import co.edu.udea.nexum.opportunity.security.domain.model.AuthenticatedUser;
 import co.edu.udea.nexum.opportunity.security.domain.utils.SecurityContextUtils;
 import co.edu.udea.nexum.opportunity.security.domain.utils.enums.RoleName;
@@ -37,7 +35,6 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
   private final OpportunityPersistencePort opportunityPersistencePort;
   private final SecurityContextUtils securityContextUtils;
   private final CatalogFeignAdapter catalogFeignAdapter;
-  private final UserFeign userFeign;
   private final ApplicationPersistencePort applicationPersistencePort;
 
   @Override
@@ -164,11 +161,7 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
       // Admin puede ver todas las oportunidades
       return findAll();
     } else if (currentUser.getRole() == RoleName.EMPLOYER) {
-      // Employer solo ve las que creó - obtener el BasicUser ID desde UserFeign
-      log.debug("Employer user, getting BasicUser ID for auth ID {}", currentUser.getId());
-      BasicUserResponse basicUser = userFeign.getUserBasicByAuthId(currentUser.getId());
-      log.debug("Employer user, returning opportunities created by BasicUser ID {}", basicUser.getId());
-      return findByCreatedBy(basicUser.getId());
+      return findByCreatedBy(currentUser.getUserId());
     } else if (currentUser.getRole() == RoleName.GRADUATE) {
       // Graduate puede ver solo las oportunidades activas en las que NO esté postulado
       List<Opportunity> activeOpportunities = findByStatus(OpportunityStatus.ACTIVE);
