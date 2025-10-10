@@ -35,6 +35,11 @@ public class ApplicationJpaAdapter extends BaseCrudAdapterImpl<UUID, Application
     }
 
     @Override
+    public List<Long> findOpportunityIdsByApplicantId(UUID applicantId) {
+        return List.of();
+    }
+
+    @Override
     public Application findById(UUID uuid) {
         return null;
     }

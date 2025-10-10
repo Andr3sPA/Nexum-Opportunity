@@ -6,6 +6,7 @@ import co.edu.udea.nexum.opportunity.common.domain.usecase.AuditableCrudUseCase;
 import co.edu.udea.nexum.opportunity.application.domain.spi.ApplicationPersistencePort;
 import co.edu.udea.nexum.opportunity.opportunity.domain.exception.OpportunityNotFoundException;
 import co.edu.udea.nexum.opportunity.opportunity.domain.spi.OpportunityPersistencePort;
+import co.edu.udea.nexum.opportunity.security.domain.utils.SecurityContextUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

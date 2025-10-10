@@ -8,4 +8,5 @@ import java.util.UUID;
 
 public interface ApplicationPersistencePort extends BaseCrudPersistencePort<UUID, Application> {
     List<Application> findByUserId(UUID userId);
+    List<Long> findOpportunityIdsByApplicantId(UUID applicantId);
 }

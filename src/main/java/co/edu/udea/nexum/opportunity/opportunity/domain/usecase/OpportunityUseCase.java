@@ -3,6 +3,8 @@ package co.edu.udea.nexum.opportunity.opportunity.domain.usecase;
 import java.util.List;
 import java.util.UUID;
 
+import co.edu.udea.nexum.opportunity.application.domain.model.Application;
+import co.edu.udea.nexum.opportunity.application.domain.spi.ApplicationPersistencePort;
 import org.springframework.stereotype.Service;
 
 import co.edu.udea.nexum.opportunity.common.domain.exception.EntityNotFoundException;
@@ -36,6 +38,7 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
   private final SecurityContextUtils securityContextUtils;
   private final CatalogFeignAdapter catalogFeignAdapter;
   private final UserFeign userFeign;
+  private final ApplicationPersistencePort applicationPersistencePort;
 
   @Override
   protected BaseCrudPersistencePort<Long, Opportunity> getPersistencePort() {
@@ -105,8 +108,7 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
     // Ensure createdBy is set for new opportunities if user is authenticated
     if (model.getCreatedBy() == null && securityContextUtils.isAuthenticated()) {
       try {
-        AuthenticatedUser currentUser = securityContextUtils.getCurrentUser();
-        model.setCreatedBy(currentUser.getId());
+        model.setCreatedBy(securityContextUtils.getCurrentUser().getUserId());
       } catch (IllegalStateException e) {
         log.debug("Error setting createdBy for anonymous creation", e);
       }
@@ -168,8 +170,18 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
       log.debug("Employer user, returning opportunities created by BasicUser ID {}", basicUser.getId());
       return findByCreatedBy(basicUser.getId());
     } else if (currentUser.getRole() == RoleName.GRADUATE) {
-      // Graduate puede ver solo las oportunidades activas
-      return findByStatus(OpportunityStatus.ACTIVE);
+      // Graduate puede ver solo las oportunidades activas en las que NO esté postulado
+      List<Opportunity> activeOpportunities = findByStatus(OpportunityStatus.ACTIVE);
+      // Obtener las applications del egresado
+      List<Application> applications = applicationPersistencePort.findByUserId(currentUser.getUserId());
+      List<Long> appliedOpportunityIds = applications.stream()
+          .map(Application::getOpportunity)
+              .map(Opportunity::getId)
+          .toList();
+      // Filtrar oportunidades en las que NO esté postulado
+      return activeOpportunities.stream()
+          .filter(opportunity -> !appliedOpportunityIds.contains(opportunity.getId()))
+          .toList();
     } else {
       // Otros roles no pueden ver oportunidades
       throw new IllegalArgumentException(
@@ -196,7 +208,7 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
 
     // Employer can only access opportunities they created
     if (currentUser.getRole() == RoleName.EMPLOYER &&
-        opportunity.getCreatedBy().equals(currentUser.getId())) {
+        opportunity.getCreatedBy().equals(currentUser.getUserId())) {
       return opportunity;
     }
 

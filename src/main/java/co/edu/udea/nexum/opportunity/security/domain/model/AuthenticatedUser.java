@@ -13,12 +13,14 @@ public class AuthenticatedUser implements Model<UUID> {
     private UUID id;
     private RoleName role;
     private String token;
+    private UUID userId;
 
     @Generated
     public AuthenticatedUser(AuthenticatedUserBuilder builder) {
         this.id = builder.id;
         this.role = builder.role;
         this.token = builder.token;
+        this.userId = builder.userId;
     }
 
     public UUID getId() {
@@ -45,6 +47,14 @@ public class AuthenticatedUser implements Model<UUID> {
         this.token = token;
     }
 
+    public UUID getUserId() {
+        return userId;
+    }
+
+    public void setUserId(UUID userId) {
+        this.userId = userId;
+    }
+
     public static AuthenticatedUserBuilder builder(){
         return new AuthenticatedUserBuilder();
     }
@@ -54,6 +64,7 @@ public class AuthenticatedUser implements Model<UUID> {
         private UUID id;
         private RoleName role;
         private String token;
+        private UUID userId;
 
         public AuthenticatedUserBuilder id(UUID id) {
             this.id = id;
@@ -67,6 +78,11 @@ public class AuthenticatedUser implements Model<UUID> {
 
         public AuthenticatedUserBuilder token(String token) {
             this.token = token;
+            return this;
+        }
+
+        public AuthenticatedUserBuilder userId(UUID userId) {
+            this.userId = userId;
             return this;
         }
 

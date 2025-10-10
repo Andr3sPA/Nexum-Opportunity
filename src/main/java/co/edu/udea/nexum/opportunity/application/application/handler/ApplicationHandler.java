@@ -5,6 +5,7 @@ import co.edu.udea.nexum.opportunity.application.application.mapper.ApplicationR
 import co.edu.udea.nexum.opportunity.application.domain.model.Application;
 import co.edu.udea.nexum.opportunity.application.domain.usecase.ApplicationUseCase;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import co.edu.udea.nexum.opportunity.security.domain.utils.SecurityContextUtils;
 
@@ -18,10 +19,10 @@ public class ApplicationHandler {
     private final ApplicationRequestMapper applicationRequestMapper;
 
     public Application save(ApplicationRequest request) {
-        Application applicationToSave = applicationRequestMapper.toDomain(request, securityContextUtils.getCurrentUser().getId());
+        Application applicationToSave = applicationRequestMapper.toDomain(request, securityContextUtils.getCurrentUser().getUserId());
         return applicationUseCase.save(applicationToSave);
     }
     public List<Application> getAll(){
-        return applicationUseCase.findAll();
+        return applicationUseCase.findByUserId(securityContextUtils.getCurrentUser().getUserId());
     }
 }
