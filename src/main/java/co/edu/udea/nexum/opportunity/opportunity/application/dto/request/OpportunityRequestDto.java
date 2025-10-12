@@ -60,4 +60,6 @@ public class OpportunityRequestDto implements BaseRequest {
     private Set<Long> coursedProgramIds; // References to catalog programs
     private Set<Long> programCompetencyIds; // References to catalog competencies
     private Set<Long> jobAreaIds; // References to catalog job areas
+
+    private String link;
 }

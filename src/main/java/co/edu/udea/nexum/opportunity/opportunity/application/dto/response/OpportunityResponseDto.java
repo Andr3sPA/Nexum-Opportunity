@@ -49,6 +49,7 @@ public class OpportunityResponseDto implements BaseResponse {
 
     // New fields
     private LocalDate expirationDate;
+    private String link;
 
     // Flattened fields for backward compatibility
     private String complementaryStudies;

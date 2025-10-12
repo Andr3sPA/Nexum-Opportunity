@@ -73,6 +73,9 @@ public class OpportunityEntity implements NexumEntity<Long> {
   @JoinColumn(name = "candidate_requirements_id")
   private CandidateRequirementsEntity candidateRequirements;
 
+  @Column(name = "link")
+  private String link;
+
   @PrePersist
   protected void onCreate() {
     creationDate = LocalDateTime.now();

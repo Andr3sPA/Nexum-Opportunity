@@ -37,6 +37,9 @@ public class Opportunity implements Model<Long>, AuditableModel {
   private BusinessContact businessContact;
   private CandidateRequirements candidateRequirements;
 
+  // New field for storing the link provided by the company
+  private String link;
+
   // Helper methods for backward compatibility
   public String getBusinessName() {
     return businessContact != null ? businessContact.getBusinessName() : null;
