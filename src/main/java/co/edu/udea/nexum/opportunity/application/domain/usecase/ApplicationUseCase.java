@@ -29,7 +29,7 @@ public class ApplicationUseCase extends AuditableCrudUseCase<UUID, Application> 
         if (opportunityPersistencePort.findById(application.getOpportunity().getId()) == null) {
             throw new OpportunityNotFoundException(application.getOpportunity().getId());
         }
-        else if(applicationPersistencePort.findById(application.getId()).getUserId()==application.getUserId()){
+        else if(applicationPersistencePort.findByUserIdAndOpportunityId(application.getUserId(),application.getOpportunity().getId()).isPresent()){
             return null;
         }
         return applicationPersistencePort.save(application);

@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Component
@@ -37,6 +38,11 @@ public class ApplicationJpaAdapter extends BaseCrudAdapterImpl<UUID, Application
     @Override
     public List<Long> findOpportunityIdsByApplicantId(UUID applicantId) {
         return List.of();
+    }
+
+    @Override
+    public Optional<Application> findByUserIdAndOpportunityId(UUID userId, UUID opportunityId) {
+        return Optional.empty();
     }
 
     @Override
