@@ -165,15 +165,8 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
     } else if (currentUser.getRole() == RoleName.GRADUATE) {
       // Graduate puede ver solo las oportunidades activas en las que NO esté postulado
       List<Opportunity> activeOpportunities = findByStatus(OpportunityStatus.ACTIVE);
-      // Obtener las applications del egresado
-      List<Application> applications = applicationPersistencePort.findByUserId(currentUser.getUserId());
-      List<Long> appliedOpportunityIds = applications.stream()
-          .map(Application::getOpportunity)
-              .map(Opportunity::getId)
-          .toList();
       // Filtrar oportunidades en las que NO esté postulado
-      return activeOpportunities.stream()
-          .filter(opportunity -> !appliedOpportunityIds.contains(opportunity.getId()))
+      return findByStatus(OpportunityStatus.ACTIVE).stream()
           .toList();
     } else {
       // Otros roles no pueden ver oportunidades
