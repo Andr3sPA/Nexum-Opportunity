@@ -117,7 +117,7 @@ public class OpportunityUseCase extends AuditableCrudUseCase<Long, Opportunity> 
     if (model.getEditCode() == null || model.getEditCode().trim().isEmpty()) {
       model.setEditCode(generateEditCode());
     }
-
+    model.setStatus(OpportunityStatus.ON_HOLD);
     log.debug("Saving opportunity {}", model);
     return super.save(model);
   }

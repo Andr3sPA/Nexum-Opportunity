@@ -41,7 +41,7 @@ public class ApplicationJpaAdapter extends BaseCrudAdapterImpl<UUID, Application
     }
 
     @Override
-    public Optional<Application> findByUserIdAndOpportunityId(UUID userId, UUID opportunityId) {
+    public Optional<Application> findByUserIdAndOpportunityId(UUID userId, Long opportunityId) {
         return Optional.empty();
     }
 
