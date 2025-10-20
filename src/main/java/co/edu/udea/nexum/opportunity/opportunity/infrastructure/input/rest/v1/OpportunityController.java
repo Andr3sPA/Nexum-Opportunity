@@ -3,6 +3,7 @@ package co.edu.udea.nexum.opportunity.opportunity.infrastructure.input.rest.v1;
 import co.edu.udea.nexum.opportunity.opportunity.application.dto.request.OpportunityRequestDto;
 import co.edu.udea.nexum.opportunity.opportunity.application.dto.response.OpportunityResponseDto;
 import co.edu.udea.nexum.opportunity.opportunity.application.handler.OpportunityHandler;
+import co.edu.udea.nexum.opportunity.opportunity.domain.model.OpportunityStatus;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -84,6 +85,18 @@ public class OpportunityController {
       @RequestBody String ownerId) {
     opportunityHandler.assignOwnerByEditCode(editCode, ownerId);
     return ResponseEntity.ok().build();
+  }
+
+  @PatchMapping("/{id}/status")
+  @Operation(summary = "Update opportunity status by ID - only ADMIN")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasRole('ADMIN')")
+  public ResponseEntity<OpportunityResponseDto> updateOpportunityStatus(
+      @PathVariable("id") Long id,
+      @RequestParam("status") String status) {
+    OpportunityStatus newStatus = OpportunityStatus.valueOf(status.toUpperCase());
+    OpportunityResponseDto updated = opportunityHandler.updateOpportunityStatus(id, newStatus);
+    return ResponseEntity.ok(updated);
   }
 
 }
