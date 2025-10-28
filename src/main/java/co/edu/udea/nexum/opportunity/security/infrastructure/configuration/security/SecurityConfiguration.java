@@ -49,8 +49,6 @@ public class SecurityConfiguration {
       "/v1/identity-document-types/**",
       AUTH_PATH,
 
-      // Opportunities
-      "/v1/opportunities/**",
   };
 
   @Bean
