@@ -1,7 +1,6 @@
 package co.edu.udea.nexum.opportunity.application.infraestructure.output.jpa.entity;
 
 import co.edu.udea.nexum.opportunity.opportunity.infrastructure.output.jpa.entity.OpportunityEntity;
-import co.edu.udea.nexum.opportunity.application.domain.model.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import co.edu.udea.nexum.opportunity.common.infrastructure.output.jpa.entity.NexumEntity;
@@ -46,17 +45,10 @@ public class ApplicationEntity implements NexumEntity<UUID> {
     @Column(name = "last_update")
     private LocalDateTime lastUpdate;
 
-    @Enumerated(EnumType.STRING)
-    @Column(name = "status", length = 50, nullable = false)
-    private ApplicationStatus status;
-
     @PrePersist
     protected void onCreate() {
         createdDate = LocalDateTime.now();
         lastUpdate = LocalDateTime.now();
-        if (status == null) {
-            status = ApplicationStatus.PENDING;
-        }
     }
 
     @PreUpdate
@@ -64,11 +56,4 @@ public class ApplicationEntity implements NexumEntity<UUID> {
         lastUpdate = LocalDateTime.now();
     }
 
-    public void setStatus(ApplicationStatus status) {
-        if (status == null) {
-            this.status = ApplicationStatus.PENDING;
-        } else {
-            this.status = status;
-        }
-    }
 }

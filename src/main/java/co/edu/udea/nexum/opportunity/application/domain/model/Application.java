@@ -16,7 +16,6 @@ public class Application implements Model<UUID>, AuditableModel{
     private Opportunity opportunity;
     private LocalDateTime createdDate;
     private LocalDateTime lastUpdate;
-    private ApplicationStatus status;
 
     @Override
     public LocalDateTime getCreationDate() {
