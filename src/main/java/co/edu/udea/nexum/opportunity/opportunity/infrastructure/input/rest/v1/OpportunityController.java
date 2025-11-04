@@ -27,6 +27,7 @@ import java.util.List;
 public class OpportunityController {
 
   private final OpportunityHandler opportunityHandler;
+  private final co.edu.udea.nexum.opportunity.opportunity.application.OpportunityHiredService opportunityHiredService;
 
   @PostMapping
   @Operation(summary = "Create a new opportunity")
@@ -95,8 +96,44 @@ public class OpportunityController {
       @PathVariable("id") Long id,
       @RequestParam("status") String status) {
     OpportunityStatus newStatus = OpportunityStatus.valueOf(status.toUpperCase());
-    OpportunityResponseDto updated = opportunityHandler.updateOpportunityStatus(id, newStatus);
-    return ResponseEntity.ok(updated);
+    OpportunityResponseDto updatedOpportunity = opportunityHandler.updateOpportunityStatus(id, newStatus);
+    return ResponseEntity.ok(updatedOpportunity);
+  }
+
+  // --- New endpoints for hired candidates ---
+
+  @GetMapping("/{id}/candidates")
+  @Operation(summary = "Search candidates for an opportunity (page size = 5). Employer/Admin only")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN')")
+  public ResponseEntity<List<co.edu.udea.nexum.opportunity.opportunity.application.dto.ProfileDto>> searchCandidates(
+      @PathVariable("id") Long opportunityId,
+      @RequestParam(name = "q", required = false, defaultValue = "") String q,
+      @RequestParam(name = "page", required = false, defaultValue = "0") int page
+  ) {
+    List<co.edu.udea.nexum.opportunity.opportunity.application.dto.ProfileDto> results =
+        opportunityHiredService.searchCandidates(q, page);
+    return ResponseEntity.ok(results);
+  }
+
+  @PostMapping("/{id}/hired")
+  @Operation(summary = "Mark selected profiles as hired for an opportunity. Employer/Admin only")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN')")
+  public ResponseEntity<Void> markHired(
+      @PathVariable("id") Long opportunityId,
+      @RequestBody List<java.util.UUID> userIds
+  ) {
+    opportunityHiredService.markHired(opportunityId, userIds);
+    return ResponseEntity.ok().build();
+  }
+
+  @GetMapping("/{id}/hired")
+  @Operation(summary = "Get hired user ids for an opportunity")
+  @SecurityRequirement(name = "bearerAuth")
+  @PreAuthorize("hasRole('EMPLOYER') or hasRole('ADMIN') or hasRole('GRADUATE')")
+  public ResponseEntity<List<java.util.UUID>> getHired(@PathVariable("id") Long opportunityId) {
+    return ResponseEntity.ok(opportunityHiredService.getHiredUserIds(opportunityId));
   }
 
 }
