@@ -143,4 +143,10 @@ tasks.named('bootRun') {
             println "  ${key}: ${value}"
         }
     }
+    jvmArgs([
+      '-Xmx512m'
+    ])
 }
+
+
+
