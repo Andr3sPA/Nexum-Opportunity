@@ -47,6 +47,7 @@ public class SecurityConfiguration {
       // Authentication
       "/v1/home",
       "/v1/identity-document-types/**",
+      "/v1/opportunities",
       AUTH_PATH,
 
   };
