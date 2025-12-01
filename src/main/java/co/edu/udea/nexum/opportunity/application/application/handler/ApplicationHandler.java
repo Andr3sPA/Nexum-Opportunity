@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import co.edu.udea.nexum.opportunity.security.domain.utils.SecurityContextUtils;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Component
@@ -24,5 +25,17 @@ public class ApplicationHandler {
     }
     public List<Application> getAll(){
         return applicationUseCase.findByUserId(securityContextUtils.getCurrentUser().getUserId());
+    }
+    
+    public long getTotalApplicationsCount() {
+        return applicationUseCase.countAll();
+    }
+    
+    public long getApplicationsByMonth(int months) {
+        return applicationUseCase.countByLastMonths(months);
+    }
+    
+    public List<Object[]> getApplicationsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return applicationUseCase.countApplicationsByDateRange(startDate, endDate);
     }
 }

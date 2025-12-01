@@ -41,10 +41,18 @@ public class ApplicationEntity implements NexumEntity<UUID> {
 
     @Column(name = "created_date", nullable = false, updatable = false)
     private LocalDateTime createdDate;
+    
+    // Add a getter to return date as string for JSON serialization
+    @Transient
+    public String getCreatedDateString() {
+        return createdDate != null ? createdDate.toString() : null;
+    }
+
+
 
     @Column(name = "last_update")
     private LocalDateTime lastUpdate;
-
+    
     @PrePersist
     protected void onCreate() {
         createdDate = LocalDateTime.now();
@@ -54,6 +62,16 @@ public class ApplicationEntity implements NexumEntity<UUID> {
     @PreUpdate
     protected void onUpdate() {
         lastUpdate = LocalDateTime.now();
+    }
+
+    @Override
+    public UUID getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(UUID id) {
+        this.id = id;
     }
 
 }

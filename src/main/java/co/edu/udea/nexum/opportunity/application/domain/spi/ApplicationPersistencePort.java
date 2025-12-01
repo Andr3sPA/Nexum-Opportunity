@@ -11,4 +11,7 @@ public interface ApplicationPersistencePort extends BaseCrudPersistencePort<UUID
     List<Application> findByUserId(UUID userId);
     List<Long> findOpportunityIdsByApplicantId(UUID applicantId);
     Optional<Application> findByUserIdAndOpportunityId(UUID userId, Long opportunityId);
+    long count();
+    long countByLastMonths(int months);
+    List<Object[]> countApplicationsByDateRange(java.time.LocalDateTime startDate, java.time.LocalDateTime endDate);
 }

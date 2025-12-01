@@ -10,6 +10,7 @@ import co.edu.udea.nexum.opportunity.security.domain.utils.SecurityContextUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 @Component
@@ -48,5 +49,17 @@ public class ApplicationUseCase extends AuditableCrudUseCase<UUID, Application> 
     @Override
     protected void validateEntity(UUID currentId, Application model) {
 
+    }
+    
+    public long countAll() {
+        return applicationPersistencePort.count();
+    }
+    
+    public long countByLastMonths(int months) {
+        return applicationPersistencePort.countByLastMonths(months);
+    }
+    
+    public List<Object[]> countApplicationsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return applicationPersistencePort.countApplicationsByDateRange(startDate, endDate);
     }
 }

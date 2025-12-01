@@ -10,6 +10,7 @@ import co.edu.udea.nexum.opportunity.application.infraestructure.output.jpa.repo
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -48,6 +49,22 @@ public class ApplicationJpaAdapter extends BaseCrudAdapterImpl<UUID, Application
     @Override
     public Application findById(UUID uuid) {
         return null;
+    }
+    
+    @Override
+    public long count() {
+        return applicationRepository.countAllApplications();
+    }
+    
+    @Override
+    public long countByLastMonths(int months) {
+        LocalDateTime startDate = LocalDateTime.now().minusMonths(months);
+        return applicationRepository.countApplicationsCreatedAfter(startDate);
+    }
+    
+    @Override
+    public List<Object[]> countApplicationsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
+        return applicationRepository.countApplicationsByDateRange(startDate, endDate);
     }
 
 
